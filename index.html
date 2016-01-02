@@ -39,9 +39,6 @@ Only use this library if you intend to give the user the ability to change the c
 
 <hr>
 
-<h4>
-<a id="this-document-will-be-updated-soon-some-of-the-content-is-outdated-some-of-the-content-is-for-the-next-release-it-wil-probably-be-re-written-mostly-see-the-sample-project-for-current-implementations" class="anchor" href="#this-document-will-be-updated-soon-some-of-the-content-is-outdated-some-of-the-content-is-for-the-next-release-it-wil-probably-be-re-written-mostly-see-the-sample-project-for-current-implementations" aria-hidden="true"><span class="octicon octicon-link"></span></a>This document will be updated soon, some of the content is outdated, some of the content is for the next release. It wil probably be re-written mostly. See the sample project for current implementations.</h4>
-
 <h1>
 <a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h1>
 
@@ -126,7 +123,7 @@ Only use this library if you intend to give the user the ability to change the c
 
 <div class="highlight highlight-source-groovy-gradle"><pre><span class="pl-en">dependencies</span> {
     <span class="pl-k">..</span>.
-    compile(<span class="pl-s"><span class="pl-pds">'</span>com.github.afollestad:app-theme-engine:0.5.0@aar<span class="pl-pds">'</span></span>) {
+    compile(<span class="pl-s"><span class="pl-pds">'</span>com.github.afollestad:app-theme-engine:0.6.0@aar<span class="pl-pds">'</span></span>) {
         transitive <span class="pl-k">=</span> <span class="pl-c1">true</span>
     }
 }</pre></div>
@@ -167,6 +164,9 @@ to set them again unless you want the value to be changed from what it was previ
     .coloredStatusBar(<span class="pl-c1">true</span>)
     <span class="pl-c">// dark status bar icons on Marshmallow (API 23)+</span>
     .lightStatusBarMode(<span class="pl-smi">Config</span><span class="pl-c1"><span class="pl-k">.</span>LIGHT_STATUS_BAR_AUTO</span>)
+    <span class="pl-c">// sets a color for all toolbars, defaults to primaryColor() value.</span>
+    <span class="pl-c">// this also gets correctly applied to CollapsingToolbarLayouts.</span>
+    .toolbarColor(color)
     <span class="pl-c">// when on, makes the toolbar navigation icon, title, and menu icons black  </span>
     lightToolbarMode(<span class="pl-smi">Config</span><span class="pl-c1"><span class="pl-k">.</span>LIGHT_TOOLBAR_AUTO</span>)
     <span class="pl-c">// by default, is equal to primaryColor unless coloredNavigationBar is false</span>
@@ -252,13 +252,27 @@ for a light and dark theme.</p>
 in your Configuration (if you don't want to use separate keys for different screens).</p>
 
 <div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MyActivity</span> <span class="pl-k">extends</span> <span class="pl-e">AppCompatActivity</span> 
-        <span class="pl-k">implements</span> <span class="pl-e">ATEActivityThemeCustomizer</span>, <span class="pl-e">ATEStatusBarCustomizer</span>, <span class="pl-e">ATETaskDescriptionCustomizer</span>, <span class="pl-e">ATENavigationBarCustomizer</span> {
+        <span class="pl-k">implements</span> <span class="pl-e">ATEActivityThemeCustomizer</span>, <span class="pl-e">ATEToolbarCustomizer</span>, <span class="pl-e">ATEStatusBarCustomizer</span>, <span class="pl-e">ATETaskDescriptionCustomizer</span>, <span class="pl-e">ATENavigationBarCustomizer</span> {
 
     <span class="pl-k">@StyleRes</span>
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getActivityTheme</span>() {
         <span class="pl-c">// Self explanatory. Can be used to override activityTheme() config value if set.</span>
         <span class="pl-k">return</span> <span class="pl-smi">R</span><span class="pl-k">.</span>style<span class="pl-k">.</span>my_activity_theme;
+    }
+
+    <span class="pl-k">@Config</span><span class="pl-k">.</span><span class="pl-smi">LightToolbarMode</span>
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getLightToolbarMode</span>() {
+        <span class="pl-c">// When on, toolbar icons and text are made black when the toolbar background is light </span>
+        <span class="pl-k">return</span> <span class="pl-smi">Config</span><span class="pl-c1"><span class="pl-k">.</span>LIGHT_TOOLBAR_AUTO</span>;
+    }
+
+    <span class="pl-k">@ColorInt</span>
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getToolbarColor</span>() {
+        <span class="pl-c">// Normally toolbars are the primary theme color</span>
+        <span class="pl-k">return</span> <span class="pl-smi">Color</span><span class="pl-c1"><span class="pl-k">.</span>BLACK</span>;
     }
 
     <span class="pl-k">@ColorInt</span>
@@ -271,20 +285,29 @@ in your Configuration (if you don't want to use separate keys for different scre
     <span class="pl-k">@Config</span><span class="pl-k">.</span><span class="pl-smi">LightStatusBarMode</span>
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getLightStatusBarMode</span>() {
+        <span class="pl-c">// When on, status bar icons and text are made black when the status bar background is light (API 23+)</span>
         <span class="pl-k">return</span> <span class="pl-smi">Config</span><span class="pl-c1"><span class="pl-k">.</span>LIGHT_STATUS_BAR_AUTO</span>;
     }
 
     <span class="pl-k">@ColorInt</span>
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getTaskDescriptionColor</span>() {
-        <span class="pl-c">// Task description is the color of your Activity's entry in Android's recents screen</span>
+        <span class="pl-c">// Task description is the color of your Activity's entry in Android's recents screen.</span>
+        <span class="pl-c">// Alpha component of returned color is always stripped.</span>
         <span class="pl-k">return</span> <span class="pl-smi">Color</span><span class="pl-c1"><span class="pl-k">.</span>GREEN</span>;
+    }
+
+    <span class="pl-k">@Nullable</span>
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">Bitmap</span> <span class="pl-en">getTaskDescriptionIcon</span>() {
+        <span class="pl-c">// Returning null falls back to the default (app's launcher icon)</span>
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
     }
 
     <span class="pl-k">@ColorInt</span>
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getNavigationBarColor</span>() {
-        <span class="pl-c">// Navigation bar is usually either black, or equal to the primary theme colro</span>
+        <span class="pl-c">// Navigation bar is usually either black, or equal to the primary theme color</span>
         <span class="pl-k">return</span> <span class="pl-smi">Color</span><span class="pl-c1"><span class="pl-k">.</span>BLUE</span>;
     }
 }</pre></div>
@@ -440,7 +463,8 @@ the directions in <a href="https://github.com/afollestad/app-theme-engine#custom
 background is light: the navigation icon (e.g. back or drawer), title, and menu icons will be tinted 
 black. Otherwise they will be white as normal. </p>
 
-<p>ATE will also automatically theme widgets in your overflow menu, such as checkboxes and radio buttons.</p>
+<p>ATE will automatically theme widgets in your overflow menu, such as checkboxes and radio buttons. It 
+will also correctly theme <code>CollapsingToolbarLayout</code>'s.</p>
 
 <h4>
 <a id="individual-views-and-lists" class="anchor" href="#individual-views-and-lists" aria-hidden="true"><span class="octicon octicon-link"></span></a>Individual Views and Lists</h4>
