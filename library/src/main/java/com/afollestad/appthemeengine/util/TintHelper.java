@@ -131,8 +131,8 @@ public final class TintHelper {
     }
 
     @SuppressWarnings("deprecation")
-    public static void setTintAuto(@NonNull View view, @ColorInt int color, boolean background) {
-        final boolean isDark = !ATEUtil.isColorLight(ATEUtil.resolveColor(view.getContext(), android.R.attr.windowBackground));
+    public static void setTintAuto(final @NonNull View view, final @ColorInt int color,
+                                   final boolean background, final boolean isDark) {
         if (!background) {
             if (view instanceof RadioButton)
                 setTint((RadioButton) view, color, isDark);

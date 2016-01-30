@@ -61,7 +61,7 @@ public class TintTagProcessor extends TagProcessor {
         if (mSelectorMode) {
             TintHelper.setTintSelector(view, result.getColor(), !mLightSelector, result.isDark(context));
         } else {
-            TintHelper.setTintAuto(view, result.getColor(), mBackgroundMode);
+            TintHelper.setTintAuto(view, result.getColor(), mBackgroundMode, result.isDark(context));
         }
 
         if (view instanceof EditText) {
