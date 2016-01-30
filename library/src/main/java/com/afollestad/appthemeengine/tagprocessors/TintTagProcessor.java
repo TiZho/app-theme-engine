@@ -1,7 +1,6 @@
 package com.afollestad.appthemeengine.tagprocessors;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -16,7 +15,6 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.util.TextInputLayoutUtil;
 import com.afollestad.appthemeengine.util.TintHelper;
 
@@ -60,15 +58,8 @@ public class TintTagProcessor extends TagProcessor {
         final ColorResult result = getColorFromSuffix(context, key, view, suffix);
         if (result == null) return;
 
-        boolean isDark = false;
-        View firstBgView = getBackgroundView(view);
-        if (firstBgView != null) {
-            final ColorDrawable cd = (ColorDrawable) firstBgView.getBackground();
-            isDark = ATEUtil.isColorLight(cd.getColor());
-        }
-
         if (mSelectorMode) {
-            TintHelper.setTintSelector(view, result.getColor(), !mLightSelector, isDark);
+            TintHelper.setTintSelector(view, result.getColor(), !mLightSelector, result.isDark(context));
         } else {
             TintHelper.setTintAuto(view, result.getColor(), mBackgroundMode);
         }

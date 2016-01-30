@@ -24,13 +24,30 @@ public abstract class TagProcessor {
     public static class ColorResult {
 
         private int mColor;
+        private boolean mDependent;
+        private boolean mDark;
 
-        public ColorResult(@ColorInt int color) {
+        public ColorResult(@ColorInt int color, boolean dependent, boolean dark) {
             mColor = color;
+            mDependent = dependent;
+            mDark = dark;
         }
 
         public int getColor() {
             return mColor;
+        }
+
+        public boolean isDependent() {
+            return mDependent;
+        }
+
+        public boolean isDark(Context context) {
+            if (!mDependent) {
+                // mDark wasn't loaded, determine from window background instead.
+                final int windowBg = ATEUtil.resolveColor(context, android.R.attr.windowBackground);
+                mDark = !ATEUtil.isColorLight(windowBg);
+            }
+            return mDark;
         }
 
         public void adjustAlpha(float factor) {
@@ -44,7 +61,11 @@ public abstract class TagProcessor {
      */
     @Nullable
     public static ColorResult getColorFromSuffix(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
+        @ColorInt
         final int result;
+        boolean isDependent = false;
+        boolean isDark = false;
+
         switch (suffix) {
             case PRIMARY_COLOR:
                 result = Config.primaryColor(context, key);
@@ -70,36 +91,43 @@ public abstract class TagProcessor {
 
             case PARENT_DEPENDENT: {
                 if (view.getParent() == null) {
+                    // Wait for post inflation when parents are assigned
                     ATE.addPostInflationView(view);
                     return null;
                 }
+                isDependent = true;
                 final View firstBgView = getBackgroundView(view);
                 if (firstBgView == null) {
                     Log.d("ATETagProcessor", "No parents with color drawables as backgrounds found, falling back to windowBackground.");
-                    result = ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.windowBackground)) ?
-                            Color.BLACK : Color.WHITE;
+                    final int dependentColor = ATEUtil.resolveColor(context, android.R.attr.windowBackground);
+                    isDark = !ATEUtil.isColorLight(dependentColor);
+                    result = isDark ? Color.WHITE : Color.BLACK;
                 } else {
                     final ColorDrawable bg = (ColorDrawable) firstBgView.getBackground();
-                    result = ATEUtil.isColorLight(bg.getColor()) ? Color.BLACK : Color.WHITE;
+                    isDark = !ATEUtil.isColorLight(bg.getColor());
+                    result = isDark ? Color.WHITE : Color.BLACK;
                 }
                 break;
             }
-            case PRIMARY_COLOR_DEPENDENT:
-                result = ATEUtil.isColorLight(Config.primaryColor(context, key)) ?
-                        Color.BLACK : Color.WHITE;
+            case PRIMARY_COLOR_DEPENDENT: {
+                isDark = !ATEUtil.isColorLight(Config.primaryColor(context, key));
+                result = isDark ? Color.WHITE : Color.BLACK;
                 break;
-            case ACCENT_COLOR_DEPENDENT:
-                result = ATEUtil.isColorLight(Config.accentColor(context, key)) ?
-                        Color.BLACK : Color.WHITE;
+            }
+            case ACCENT_COLOR_DEPENDENT: {
+                isDark = !ATEUtil.isColorLight(Config.accentColor(context, key));
+                result = isDark ? Color.WHITE : Color.BLACK;
                 break;
-            case WINDOW_BG_DEPENDENT:
-                result = ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.windowBackground)) ?
-                        Color.BLACK : Color.WHITE;
+            }
+            case WINDOW_BG_DEPENDENT: {
+                isDark = !ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.windowBackground));
+                result = isDark ? Color.WHITE : Color.BLACK;
                 break;
+            }
             default:
                 throw new IllegalArgumentException(String.format("Unknown suffix: %s", suffix));
         }
-        return new ColorResult(result);
+        return new ColorResult(result, isDependent, isDark);
     }
 
     @Nullable
