@@ -14,7 +14,7 @@
         android:layout_height="?actionBarSize"
         android:elevation="0dp"
         android:tag="background|primary_color"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:popupTheme="?toolbar_popup_theme"
         tools:ignore="UnusedAttribute">
 
         <android.support.v7.widget.AppCompatSpinner

@@ -21,7 +21,7 @@
             android:layout_height="?actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetStart="@dimen/content_inset"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="?toolbar_popup_theme" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

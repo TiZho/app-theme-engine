@@ -22,7 +22,7 @@
             android:elevation="@dimen/toolbar_elevation"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetStart="@dimen/content_inset"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="?toolbar_popup_theme" />
 
         <FrameLayout
             android:id="@+id/appbar_frame"
