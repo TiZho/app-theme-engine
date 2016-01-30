@@ -36,7 +36,7 @@ class ATEBase {
     private static HashMap<String, TagProcessor> mTagProcessors;
 
     private static void initViewProcessors() {
-        mViewProcessors = new HashMap<>();
+        mViewProcessors = new HashMap<>(5);
         mViewProcessors.put(DEFAULT_PROCESSOR, new DefaultProcessor());
 
         mViewProcessors.put(SearchView.class.getName(), new SearchViewProcessor());
@@ -78,7 +78,7 @@ class ATEBase {
     }
 
     private static void initTagProcessors() {
-        mTagProcessors = new HashMap<>();
+        mTagProcessors = new HashMap<>(14);
         mTagProcessors.put(BackgroundTagProcessor.PREFIX, new BackgroundTagProcessor());
         mTagProcessors.put(FontTagProcessor.PREFIX, new FontTagProcessor());
         mTagProcessors.put(TextColorTagProcessor.PREFIX, new TextColorTagProcessor(false, false));
