@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="4">
+    android:weightSum="3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,14 +13,12 @@
         android:elevation="@dimen/toolbar_elevation"
         android:orientation="vertical"
         android:tag="background|primary_color"
-        android:weightSum="2"
         tools:ignore="UnusedAttribute">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="@dimen/content_inset"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/content_inset">
 
             <EditText
                 android:layout_width="match_parent"
@@ -32,9 +30,11 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#000">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/content_inset"
+            android:minHeight="96dp"
+            android:tag="background|accent_color">
 
             <EditText
                 android:layout_width="match_parent"
