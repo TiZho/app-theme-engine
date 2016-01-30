@@ -87,25 +87,25 @@ public final class ATEDefaultTags {
     }
 
     private static HashMap<String, String> getDefaultTextView() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(1);
         map.put(TextColorTagProcessor.LINK_PREFIX, "accent_color");
         return map;
     }
 
     private static HashMap<String, String> getDefaultCheckedTextView() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(1);
         map.put(TintTagProcessor.PREFIX, "accent_color");
         return map;
     }
 
     private static HashMap<String, String> getDefaultFloatingActionButton() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(1);
         map.put(TintTagProcessor.SELECTOR_PREFIX_LIGHT, "accent_color");
         return map;
     }
 
     private static HashMap<String, String> getDefaultEditText() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(3);
         map.put(TintTagProcessor.PREFIX, "accent_color");
         map.put(TextColorTagProcessor.PREFIX, "primary_text");
         map.put(TextColorTagProcessor.HINT_PREFIX, "primary_text");
@@ -113,26 +113,26 @@ public final class ATEDefaultTags {
     }
 
     private static HashMap<String, String> getDefaultCompoundButton() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(2);
         map.put(TintTagProcessor.PREFIX, "accent_color");
         map.put(TextColorTagProcessor.PREFIX, "primary_text");
         return map;
     }
 
     private static HashMap<String, String> getDefaultWidget() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(1);
         map.put(TintTagProcessor.PREFIX, "accent_color");
         return map;
     }
 
     private static HashMap<String, String> getDefaultScrollableView() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(1);
         map.put(EdgeGlowTagProcessor.PREFIX, "accent_color");
         return map;
     }
 
     private static HashMap<String, String> getDefaultTabLayout() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(2);
         map.put(TabLayoutTagProcessor.TEXT_PREFIX, "parent_dependent");
         map.put(TabLayoutTagProcessor.INDICATOR_PREFIX, "accent_color");
         return map;
