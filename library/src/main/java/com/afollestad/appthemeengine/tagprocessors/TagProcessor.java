@@ -6,13 +6,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.util.ATEUtil;
-
-import java.util.Locale;
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -70,17 +69,19 @@ public abstract class TagProcessor {
                 break;
 
             case PARENT_DEPENDENT: {
-                final String viewName = ATEUtil.getIdName(context, view.getId());
                 if (view.getParent() == null) {
                     ATE.addPostInflationView(view);
                     return null;
                 }
                 final View firstBgView = getBackgroundView(view);
-                if (firstBgView == null)
-                    throw new IllegalStateException(String.format(Locale.getDefault(),
-                            "View %s uses a parent_dependent tag but its parents doesn't have a ColorDrawable as its background.", viewName));
-                final ColorDrawable bg = (ColorDrawable) firstBgView.getBackground();
-                result = ATEUtil.isColorLight(bg.getColor()) ? Color.BLACK : Color.WHITE;
+                if (firstBgView == null) {
+                    Log.d("ATETagProcessor", "No parents with color drawables as backgrounds found, falling back to windowBackground.");
+                    result = ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.windowBackground)) ?
+                            Color.BLACK : Color.WHITE;
+                } else {
+                    final ColorDrawable bg = (ColorDrawable) firstBgView.getBackground();
+                    result = ATEUtil.isColorLight(bg.getColor()) ? Color.BLACK : Color.WHITE;
+                }
                 break;
             }
             case PRIMARY_COLOR_DEPENDENT:
