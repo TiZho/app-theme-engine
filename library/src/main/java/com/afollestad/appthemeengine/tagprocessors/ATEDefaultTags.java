@@ -15,9 +15,11 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.util.NestedScrollViewUtil;
 import com.afollestad.appthemeengine.util.RecyclerViewUtil;
+import com.afollestad.appthemeengine.util.SearchViewUtil;
 import com.afollestad.appthemeengine.util.TabLayoutUtil;
 import com.afollestad.appthemeengine.viewprocessors.NestedScrollViewProcessor;
 import com.afollestad.appthemeengine.viewprocessors.RecyclerViewProcessor;
+import com.afollestad.appthemeengine.viewprocessors.SearchViewProcessor;
 import com.afollestad.appthemeengine.viewprocessors.TabLayoutProcessor;
 
 import java.util.HashMap;
@@ -52,12 +54,17 @@ public final class ATEDefaultTags {
             if (!tag.isEmpty()) tag = tag + ",";
             tag += String.format(Locale.getDefault(), "%s|%s", key, mDefaults.get(key));
         }
+        view.setTag(tag);
         Log.d("ATEDefaultTags", String.format(Locale.getDefault(), "After processing %s: %s", view.getClass().getSimpleName(), tag));
     }
 
     @Nullable
     private static HashMap<String, String> get(View forView) {
-        if (forView instanceof EditText)
+        if (ATEUtil.isInClassPath(SearchViewProcessor.MAIN_CLASS) &&
+                SearchViewUtil.isSearchViewAutoComplete(forView)) {
+            // SearchView.AutoComplete is an EditText but we want to theme it like a TextView
+            return getDefaultTextView();
+        } else if (forView instanceof EditText)
             return getDefaultEditText();
         else if (forView instanceof CompoundButton)
             return getDefaultCompoundButton();
