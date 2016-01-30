@@ -229,6 +229,8 @@ public final class EdgeGlowUtil {
             setEdgeGlowColor((RecyclerView) view, color, null);
         else if (view instanceof ViewPager)
             setEdgeGlowColor((ViewPager) view, color);
+        else
+            throw new IllegalArgumentException("Cannot set an edge glow to " + view.getClass().getName());
     }
 
     public static void setEdgeGlowColor(@NonNull ScrollView scrollView, @ColorInt int color) {

@@ -3,6 +3,7 @@ package com.afollestad.appthemeengine.viewprocessors;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.afollestad.appthemeengine.ATE;
@@ -43,6 +44,8 @@ public class DefaultProcessor implements ViewProcessor<View, Void> {
             } catch (Throwable t) {
                 throw new RuntimeException(String.format("Failed to run %s: %s", processor.getClass().getName(), t.getMessage()), t);
             }
+        } else {
+            Log.d("ATEDefaultProcessor", "No tag processors found by prefix: " + prefix);
         }
     }
 }

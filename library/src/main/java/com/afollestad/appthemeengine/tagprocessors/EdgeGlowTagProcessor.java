@@ -36,7 +36,8 @@ public class EdgeGlowTagProcessor extends TagProcessor {
     @Override
     public void process(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
         final ColorResult result = getColorFromSuffix(context, key, view, suffix);
-        if (result == null) return;
+        if (result == null)
+            return;
         EdgeGlowUtil.setEdgeGlowColorAuto(view, result.getColor());
     }
 }
