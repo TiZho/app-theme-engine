@@ -65,7 +65,7 @@ class ATEActionMenuItemView extends ActionMenuItemView implements ViewInterface 
     @Override
     public void setIcon(Drawable icon) {
         invalidateTintColor();
-        mIcon = TintHelper.tintDrawable(icon, mTintColor);
+        mIcon = TintHelper.createTintedDrawable(icon, mTintColor);
         super.setIcon(mIcon);
         invalidateActionView();
     }

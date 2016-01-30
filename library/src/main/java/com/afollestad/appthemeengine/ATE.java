@@ -276,7 +276,7 @@ public final class ATE extends ATEBase {
             field.setAccessible(true);
             Drawable collapseIcon = (Drawable) field.get(toolbar);
             if (collapseIcon != null)
-                field.set(toolbar, TintHelper.tintDrawable(collapseIcon, tintColor));
+                field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, tintColor));
         } catch (Exception e) {
             e.printStackTrace();
         }

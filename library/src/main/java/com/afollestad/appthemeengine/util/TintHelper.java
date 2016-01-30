@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
+import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -113,13 +114,13 @@ public final class TintHelper {
             fab.setRippleColor(rippleColor);
             fab.setBackgroundTintList(sl);
             if (fab.getDrawable() != null)
-                fab.setImageDrawable(tintDrawable(fab.getDrawable(), tintColor));
+                fab.setImageDrawable(createTintedDrawable(fab.getDrawable(), tintColor));
             return;
         }
 
         Drawable drawable = view.getBackground();
         if (drawable != null) {
-            drawable = tintDrawable(drawable, sl);
+            drawable = createTintedDrawable(drawable, sl);
             ATEUtil.setBackgroundCompat(view, drawable);
         }
 
@@ -181,7 +182,7 @@ public final class TintHelper {
             } else if (view.getBackground() != null) {
                 Drawable drawable = view.getBackground();
                 if (drawable != null) {
-                    drawable = tintDrawable(drawable, color);
+                    drawable = createTintedDrawable(drawable, color);
                     ATEUtil.setBackgroundCompat(view, drawable);
                 }
             }
@@ -201,7 +202,7 @@ public final class TintHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             radioButton.setButtonTintList(sl);
         } else {
-            Drawable d = tintDrawable(ContextCompat.getDrawable(radioButton.getContext(), R.drawable.abc_btn_radio_material), sl);
+            Drawable d = createTintedDrawable(ContextCompat.getDrawable(radioButton.getContext(), R.drawable.abc_btn_radio_material), sl);
             radioButton.setButtonDrawable(d);
         }
     }
@@ -213,10 +214,10 @@ public final class TintHelper {
             seekBar.setThumbTintList(s1);
             seekBar.setProgressTintList(s1);
         } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            Drawable progressDrawable = tintDrawable(seekBar.getProgressDrawable(), s1);
+            Drawable progressDrawable = createTintedDrawable(seekBar.getProgressDrawable(), s1);
             seekBar.setProgressDrawable(progressDrawable);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                Drawable thumbDrawable = tintDrawable(seekBar.getThumb(), s1);
+                Drawable thumbDrawable = createTintedDrawable(seekBar.getThumb(), s1);
                 seekBar.setThumb(thumbDrawable);
             }
         } else {
@@ -285,7 +286,7 @@ public final class TintHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             box.setButtonTintList(sl);
         } else {
-            Drawable drawable = tintDrawable(ContextCompat.getDrawable(box.getContext(), R.drawable.abc_btn_check_material), sl);
+            Drawable drawable = createTintedDrawable(ContextCompat.getDrawable(box.getContext(), R.drawable.abc_btn_check_material), sl);
             box.setButtonDrawable(drawable);
         }
     }
@@ -327,7 +328,7 @@ public final class TintHelper {
                         tint
                 }
         );
-        return tintDrawable(from, sl);
+        return createTintedDrawable(from, sl);
     }
 
     public static void setTint(@NonNull Switch switchView, @ColorInt int color, boolean useDarker) {
@@ -353,8 +354,10 @@ public final class TintHelper {
         }
     }
 
+    // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
+    @CheckResult
     @Nullable
-    public static Drawable tintDrawable(@Nullable Drawable drawable, @ColorInt int color) {
+    public static Drawable createTintedDrawable(@Nullable Drawable drawable, @ColorInt int color) {
         if (drawable == null) return null;
         drawable = DrawableCompat.wrap(drawable.mutate());
         DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
@@ -362,8 +365,10 @@ public final class TintHelper {
         return drawable;
     }
 
+    // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
+    @CheckResult
     @Nullable
-    public static Drawable tintDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {
+    public static Drawable createTintedDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {
         if (drawable == null) return null;
         drawable = DrawableCompat.wrap(drawable.mutate());
         DrawableCompat.setTintList(drawable, sl);
@@ -383,9 +388,9 @@ public final class TintHelper {
             fCursorDrawable.setAccessible(true);
             Drawable[] drawables = new Drawable[2];
             drawables[0] = ContextCompat.getDrawable(editText.getContext(), mCursorDrawableRes);
-            drawables[0] = tintDrawable(drawables[0], color);
+            drawables[0] = createTintedDrawable(drawables[0], color);
             drawables[1] = ContextCompat.getDrawable(editText.getContext(), mCursorDrawableRes);
-            drawables[1] = tintDrawable(drawables[1], color);
+            drawables[1] = createTintedDrawable(drawables[1], color);
             fCursorDrawable.set(editor, drawables);
         } catch (Exception e) {
             e.printStackTrace();

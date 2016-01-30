@@ -107,7 +107,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
 
         // Tint the toolbar navigation icon (e.g. back, drawer, etc.), otherwise handled by CollapsingToolbarLayout listener above
         if (collapsingToolbar == null && toolbar.getNavigationIcon() != null)
-            toolbar.setNavigationIcon(TintHelper.tintDrawable(toolbar.getNavigationIcon(), tintColor));
+            toolbar.setNavigationIcon(TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), tintColor));
     }
 
     private static ScrimsOffsetListener mCollapsingToolbarListener = null;
@@ -213,7 +213,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
         private void tintMenu(Menu menu, @ColorInt int tintColor) {
             for (int i = 0; i < menu.size(); i++) {
                 final MenuItem item = menu.getItem(i);
-                TintHelper.tintDrawable(item.getIcon(), tintColor);
+                item.setIcon(TintHelper.createTintedDrawable(item.getIcon(), tintColor));
             }
         }
 
@@ -237,7 +237,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
 
             mToolbar.setTitleTextColor(tintColor);
             if (mToolbar.getNavigationIcon() != null)
-                mToolbar.setNavigationIcon(TintHelper.tintDrawable(mToolbar.getNavigationIcon(), tintColor));
+                mToolbar.setNavigationIcon(TintHelper.createTintedDrawable(mToolbar.getNavigationIcon(), tintColor));
             tintMenu(mMenu, tintColor);
 
             if (mOverflows == null) {
@@ -249,7 +249,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
             if (!mOverflows.isEmpty()) {
                 for (int i = 0; i < mOverflows.size(); i++) {
                     final AppCompatImageView overflow = (AppCompatImageView) mOverflows.get(i);
-                    TintHelper.tintDrawable(overflow.getDrawable(), tintColor);
+                    overflow.setImageDrawable(TintHelper.createTintedDrawable(overflow.getDrawable(), tintColor));
                 }
             }
         }

@@ -24,7 +24,7 @@ public class SearchViewProcessor implements ViewProcessor<View, Integer> {
         field.setAccessible(true);
         final ImageView imageView = (ImageView) field.get(target);
         if (imageView.getDrawable() != null)
-            imageView.setImageDrawable(TintHelper.tintDrawable(imageView.getDrawable(), tintColor));
+            imageView.setImageDrawable(TintHelper.createTintedDrawable(imageView.getDrawable(), tintColor));
     }
 
     @Override

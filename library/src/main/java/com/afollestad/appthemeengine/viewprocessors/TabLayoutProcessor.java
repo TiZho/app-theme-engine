@@ -72,7 +72,7 @@ public class TabLayoutProcessor implements ViewProcessor<TabLayout, Void> {
         for (int i = 0; i < view.getTabCount(); i++) {
             final TabLayout.Tab tab = view.getTabAt(i);
             if (tab != null && tab.getIcon() != null)
-                TintHelper.tintDrawable(tab.getIcon(), sl);
+                tab.setIcon(TintHelper.createTintedDrawable(tab.getIcon(), sl));
         }
     }
 

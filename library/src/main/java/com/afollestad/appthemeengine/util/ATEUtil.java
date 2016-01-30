@@ -127,7 +127,7 @@ public final class ATEUtil {
                         View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
                 if (outViews.isEmpty()) return;
                 final AppCompatImageView overflow = (AppCompatImageView) outViews.get(0);
-                TintHelper.tintDrawable(overflow.getDrawable(), color);
+                overflow.setImageDrawable(TintHelper.createTintedDrawable(overflow.getDrawable(), color));
                 removeOnGlobalLayoutListener(decorView, this);
             }
         });
