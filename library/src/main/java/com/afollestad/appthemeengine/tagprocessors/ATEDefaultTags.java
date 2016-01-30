@@ -4,10 +4,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -16,6 +16,7 @@ import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.util.NestedScrollViewUtil;
 import com.afollestad.appthemeengine.util.RecyclerViewUtil;
 import com.afollestad.appthemeengine.util.TabLayoutUtil;
+import com.afollestad.appthemeengine.util.ViewPagerUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -65,13 +66,16 @@ public final class ATEDefaultTags {
             return getDefaultCheckedTextView();
         else if (forView instanceof FloatingActionButton)
             return getDefaultFloatingActionButton();
-        else if (forView instanceof ScrollView || forView instanceof ListView)
+        else if (forView instanceof ScrollView || forView instanceof AbsListView)
             return getDefaultScrollableView();
         else if (ATEUtil.isInClassPath(EdgeGlowTagProcessor.RECYCLERVIEW_CLASS) &&
                 RecyclerViewUtil.isRecyclerView(forView)) {
             return getDefaultScrollableView();
         } else if (ATEUtil.isInClassPath(EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS) &&
                 NestedScrollViewUtil.isNestedScrollView(forView)) {
+            return getDefaultScrollableView();
+        } else if (ATEUtil.isInClassPath(EdgeGlowTagProcessor.VIEWPAGER_CLASS) &&
+                ViewPagerUtil.isViewPager(forView)) {
             return getDefaultScrollableView();
         } else if (ATEUtil.isInClassPath(TabLayoutTagProcessor.MAIN_CLASS) &&
                 TabLayoutUtil.isTabLayout(forView)) {
@@ -136,4 +140,4 @@ public final class ATEDefaultTags {
 
     private ATEDefaultTags() {
     }
-}c
+}
