@@ -213,9 +213,11 @@ public final class ATE extends ATEBase {
             final ATETaskDescriptionCustomizer customizer = (ATETaskDescriptionCustomizer) activity;
             color = customizer.getTaskDescriptionColor();
             icon = customizer.getTaskDescriptionIcon();
-        }
-        if (color == ATE.USE_DEFAULT)
+            if (color == ATE.USE_DEFAULT)
+                color = Config.primaryColor(activity, key);
+        } else {
             color = Config.primaryColor(activity, key);
+        }
 
         // Task description requires fully opaque color
         color = ATEUtil.stripAlpha(color);
