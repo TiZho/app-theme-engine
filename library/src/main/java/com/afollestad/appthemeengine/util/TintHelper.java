@@ -132,7 +132,7 @@ public final class TintHelper {
 
     @SuppressWarnings("deprecation")
     public static void setTintAuto(final @NonNull View view, final @ColorInt int color,
-                                   final boolean background, final boolean isDark) {
+                                   boolean background, final boolean isDark) {
         if (!background) {
             if (view instanceof RadioButton)
                 setTint((RadioButton) view, color, isDark);
