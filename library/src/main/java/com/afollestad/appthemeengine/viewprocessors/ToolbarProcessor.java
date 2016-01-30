@@ -1,9 +1,11 @@
 package com.afollestad.appthemeengine.viewprocessors;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -125,6 +127,11 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
         private Toolbar mToolbar;
         private final CollapsingToolbarLayout mCollapsingToolbar;
         private Menu mMenu;
+        private AppCompatImageView mOverflowView;
+
+        private Drawable mOriginalNavIcon;
+        private Drawable[] mOriginalMenuIcons;
+        private Drawable mOriginalOverflowIcon;
 
         private int mCollapsedColor;
         private int mExpandedColor;
@@ -211,13 +218,23 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
         }
 
         private void tintMenu(Menu menu, @ColorInt int tintColor) {
+            ArrayList<Drawable> firstPassDrawables = null;
+            if (mOriginalMenuIcons == null)
+                firstPassDrawables = new ArrayList<>(4);
             for (int i = 0; i < menu.size(); i++) {
                 final MenuItem item = menu.getItem(i);
-                item.setIcon(TintHelper.createTintedDrawable(item.getIcon(), tintColor));
+                final Drawable origIcon;
+                if (firstPassDrawables != null) {
+                    origIcon = item.getIcon();
+                    firstPassDrawables.add(item.getIcon());
+                } else {
+                    origIcon = mOriginalMenuIcons[i];
+                }
+                item.setIcon(TintHelper.createTintedDrawable(origIcon, tintColor));
             }
+            if (firstPassDrawables != null)
+                mOriginalMenuIcons = firstPassDrawables.toArray(new Drawable[firstPassDrawables.size()]);
         }
-
-        private ArrayList<View> mOverflows;
 
         private void invalidateMenu() {
             // Mimic CollapsingToolbarLayout's CollapsingTextHelper
@@ -236,22 +253,30 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
                 tintColor = getExpandedTextColor();
 
             mToolbar.setTitleTextColor(tintColor);
-            if (mToolbar.getNavigationIcon() != null)
-                mToolbar.setNavigationIcon(TintHelper.createTintedDrawable(mToolbar.getNavigationIcon(), tintColor));
+
+            // Tint navigation icon, if any
+            if (mOriginalNavIcon == null)
+                mOriginalNavIcon = mToolbar.getNavigationIcon();
+            if (mOriginalNavIcon != null)
+                mToolbar.setNavigationIcon(TintHelper.createTintedDrawable(mOriginalNavIcon, tintColor));
+
+            // Tint action buttons
             tintMenu(mMenu, tintColor);
 
-            if (mOverflows == null) {
-                mOverflows = new ArrayList<>();
+            // Tint overflow
+            if (mOriginalOverflowIcon == null) {
+                final ArrayList<View> overflows = new ArrayList<>();
+                @SuppressLint("PrivateResource")
                 final String overflowDescription = mContext.getString(R.string.abc_action_menu_overflow_description);
-                mCollapsingToolbar.findViewsWithText(mOverflows, overflowDescription,
+                mCollapsingToolbar.findViewsWithText(overflows, overflowDescription,
                         View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
-            }
-            if (!mOverflows.isEmpty()) {
-                for (int i = 0; i < mOverflows.size(); i++) {
-                    final AppCompatImageView overflow = (AppCompatImageView) mOverflows.get(i);
-                    overflow.setImageDrawable(TintHelper.createTintedDrawable(overflow.getDrawable(), tintColor));
+                if (!overflows.isEmpty()) {
+                    mOverflowView = (AppCompatImageView) overflows.get(0);
+                    mOriginalOverflowIcon = mOverflowView.getDrawable();
                 }
             }
+            if (mOverflowView != null)
+                mOverflowView.setImageDrawable(TintHelper.createTintedDrawable(mOriginalOverflowIcon, tintColor));
         }
 
         @Override
