@@ -16,9 +16,6 @@ import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.util.NestedScrollViewUtil;
 import com.afollestad.appthemeengine.util.RecyclerViewUtil;
 import com.afollestad.appthemeengine.util.TabLayoutUtil;
-import com.afollestad.appthemeengine.viewprocessors.NestedScrollViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.RecyclerViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.TabLayoutProcessor;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -70,13 +67,13 @@ public final class ATEDefaultTags {
             return getDefaultFloatingActionButton();
         else if (forView instanceof ScrollView || forView instanceof ListView)
             return getDefaultScrollableView();
-        else if (ATEUtil.isInClassPath(RecyclerViewProcessor.MAIN_CLASS) &&
+        else if (ATEUtil.isInClassPath(EdgeGlowTagProcessor.RECYCLERVIEW_CLASS) &&
                 RecyclerViewUtil.isRecyclerView(forView)) {
             return getDefaultScrollableView();
-        } else if (ATEUtil.isInClassPath(NestedScrollViewProcessor.MAIN_CLASS) &&
+        } else if (ATEUtil.isInClassPath(EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS) &&
                 NestedScrollViewUtil.isNestedScrollView(forView)) {
             return getDefaultScrollableView();
-        } else if (ATEUtil.isInClassPath(TabLayoutProcessor.MAIN_CLASS) &&
+        } else if (ATEUtil.isInClassPath(TabLayoutTagProcessor.MAIN_CLASS) &&
                 TabLayoutUtil.isTabLayout(forView)) {
             return getDefaultTabLayout();
         } else if (forView instanceof TextView) {
@@ -126,18 +123,17 @@ public final class ATEDefaultTags {
 
     private static HashMap<String, String> getDefaultScrollableView() {
         HashMap<String, String> map = new HashMap<>();
-        // TODO edge glow tag processor
-//        map.put(TintTagProcessor.PREFIX, "accent_color");
+        map.put(EdgeGlowTagProcessor.PREFIX, "accent_color");
         return map;
     }
 
     private static HashMap<String, String> getDefaultTabLayout() {
         HashMap<String, String> map = new HashMap<>();
-        // TODO tab layout tag processor
-//        map.put(TintTagProcessor.PREFIX, "accent_color");
+        map.put(TabLayoutTagProcessor.TEXT_PREFIX, "parent_dependent");
+        map.put(TabLayoutTagProcessor.INDICATOR_PREFIX, "accent_color");
         return map;
     }
 
     private ATEDefaultTags() {
     }
-}
+}c

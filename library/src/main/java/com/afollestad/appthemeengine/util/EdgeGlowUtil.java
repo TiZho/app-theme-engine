@@ -11,14 +11,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EdgeEffect;
 import android.widget.ScrollView;
 
 import com.afollestad.appthemeengine.BuildConfig;
-import com.afollestad.appthemeengine.viewprocessors.NestedScrollViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.RecyclerViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.ViewPagerProcessor;
+import com.afollestad.appthemeengine.tagprocessors.EdgeGlowTagProcessor;
 
 import java.lang.reflect.Field;
 
@@ -116,7 +115,7 @@ public final class EdgeGlowUtil {
             NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM.setAccessible(true);
             return;
         }
-        final Class<?> cls = ATEUtil.inClassPath(NestedScrollViewProcessor.MAIN_CLASS);
+        final Class<?> cls = ATEUtil.inClassPath(EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS);
         for (Field f : cls.getDeclaredFields()) {
             switch (f.getName()) {
                 case "mEdgeGlowTop":
@@ -169,7 +168,7 @@ public final class EdgeGlowUtil {
             RECYCLER_VIEW_FIELD_EDGE_GLOW_BOTTOM.setAccessible(true);
             return;
         }
-        final Class<?> cls = ATEUtil.inClassPath(RecyclerViewProcessor.MAIN_CLASS);
+        final Class<?> cls = ATEUtil.inClassPath(EdgeGlowTagProcessor.RECYCLERVIEW_CLASS);
         for (Field f : cls.getDeclaredFields()) {
             switch (f.getName()) {
                 case "mTopGlow":
@@ -201,7 +200,7 @@ public final class EdgeGlowUtil {
             VIEW_PAGER_FIELD_EDGE_GLOW_RIGHT.setAccessible(true);
             return;
         }
-        final Class<?> cls = ATEUtil.inClassPath(ViewPagerProcessor.MAIN_CLASS);
+        final Class<?> cls = ATEUtil.inClassPath(EdgeGlowTagProcessor.VIEWPAGER_CLASS);
         for (Field f : cls.getDeclaredFields()) {
             switch (f.getName()) {
                 case "mLeftEdge":
@@ -217,6 +216,20 @@ public final class EdgeGlowUtil {
     }
 
     // Setter methods
+
+    // TODO this code probably won't compile if these imported classes are not in the class path.
+    public static void setEdgeGlowColorAuto(@NonNull View view, @ColorInt int color) {
+        if (view instanceof ScrollView)
+            setEdgeGlowColor((ScrollView) view, color);
+        else if (view instanceof NestedScrollView)
+            setEdgeGlowColor((NestedScrollView) view, color);
+        else if (view instanceof AbsListView)
+            setEdgeGlowColor((AbsListView) view, color);
+        else if (view instanceof RecyclerView)
+            setEdgeGlowColor((RecyclerView) view, color, null);
+        else if (view instanceof ViewPager)
+            setEdgeGlowColor((ViewPager) view, color);
+    }
 
     public static void setEdgeGlowColor(@NonNull ScrollView scrollView, @ColorInt int color) {
         invalidateScrollViewFields();

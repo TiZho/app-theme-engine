@@ -5,12 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SearchView;
 
 import com.afollestad.appthemeengine.tagprocessors.BackgroundTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.FontTagProcessor;
+import com.afollestad.appthemeengine.tagprocessors.TabLayoutTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.TagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.TextColorTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.TextShadowColorTagProcessor;
@@ -18,15 +17,9 @@ import com.afollestad.appthemeengine.tagprocessors.TextSizeTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.TintTagProcessor;
 import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.viewprocessors.DefaultProcessor;
-import com.afollestad.appthemeengine.viewprocessors.ListViewProcessor;
 import com.afollestad.appthemeengine.viewprocessors.NavigationViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.NestedScrollViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.RecyclerViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.ScrollViewProcessor;
 import com.afollestad.appthemeengine.viewprocessors.SearchViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.TabLayoutProcessor;
 import com.afollestad.appthemeengine.viewprocessors.ToolbarProcessor;
-import com.afollestad.appthemeengine.viewprocessors.ViewPagerProcessor;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
 import java.util.HashMap;
@@ -45,29 +38,15 @@ class ATEBase {
         mViewProcessors = new HashMap<>();
         mViewProcessors.put(DEFAULT_PROCESSOR, new DefaultProcessor());
 
-        mViewProcessors.put(ScrollView.class.getName(), new ScrollViewProcessor());
-        mViewProcessors.put(ListView.class.getName(), new ListViewProcessor());
         mViewProcessors.put(SearchView.class.getName(), new SearchViewProcessor());
         mViewProcessors.put(Toolbar.class.getName(), new ToolbarProcessor());
 
-        if (ATEUtil.isInClassPath(NestedScrollViewProcessor.MAIN_CLASS))
-            mViewProcessors.put(NestedScrollViewProcessor.MAIN_CLASS, new NestedScrollViewProcessor());
-        else Log.d("ATEBase", "NestedScrollView isn't in the class path. Ignoring.");
-        if (ATEUtil.isInClassPath(RecyclerViewProcessor.MAIN_CLASS))
-            mViewProcessors.put(RecyclerViewProcessor.MAIN_CLASS, new RecyclerViewProcessor());
-        else Log.d("ATEBase", "RecyclerView isn't in the class path. Ignoring.");
         if (ATEUtil.isInClassPath(NavigationViewProcessor.MAIN_CLASS))
             mViewProcessors.put(NavigationViewProcessor.MAIN_CLASS, new NavigationViewProcessor());
         else Log.d("ATEBase", "NavigationView isn't in the class path. Ignoring.");
-        if (ATEUtil.isInClassPath(TabLayoutProcessor.MAIN_CLASS))
-            mViewProcessors.put(TabLayoutProcessor.MAIN_CLASS, new TabLayoutProcessor());
-        else Log.d("ATEBase", "TabLayout isn't in the class path. Ignoring.");
         if (ATEUtil.isInClassPath(SearchViewProcessor.MAIN_CLASS))
             mViewProcessors.put(SearchViewProcessor.MAIN_CLASS, new SearchViewProcessor());
         else Log.d("ATEBase", "SearchView isn't in the class path. Ignoring.");
-        if (ATEUtil.isInClassPath(ViewPagerProcessor.MAIN_CLASS))
-            mViewProcessors.put(ViewPagerProcessor.MAIN_CLASS, new ViewPagerProcessor());
-        else Log.d("ATEBase", "ViewPager isn't in the class path. Ignoring.");
     }
 
     @SuppressWarnings("unchecked")
@@ -110,6 +89,8 @@ class ATEBase {
         mTagProcessors.put(TintTagProcessor.BACKGROUND_PREFIX, new TintTagProcessor(true, false, false));
         mTagProcessors.put(TintTagProcessor.SELECTOR_PREFIX, new TintTagProcessor(false, true, false));
         mTagProcessors.put(TintTagProcessor.SELECTOR_PREFIX_LIGHT, new TintTagProcessor(false, true, true));
+        mTagProcessors.put(TabLayoutTagProcessor.TEXT_PREFIX, new TabLayoutTagProcessor(true, false));
+        mTagProcessors.put(TabLayoutTagProcessor.INDICATOR_PREFIX, new TabLayoutTagProcessor(false, true));
     }
 
     @Nullable

@@ -16,12 +16,10 @@ import android.view.View;
 
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.ATEActivity;
+import com.afollestad.appthemeengine.tagprocessors.EdgeGlowTagProcessor;
+import com.afollestad.appthemeengine.tagprocessors.TabLayoutTagProcessor;
 import com.afollestad.appthemeengine.viewprocessors.NavigationViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.NestedScrollViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.RecyclerViewProcessor;
-import com.afollestad.appthemeengine.viewprocessors.TabLayoutProcessor;
 import com.afollestad.appthemeengine.viewprocessors.ToolbarProcessor;
-import com.afollestad.appthemeengine.viewprocessors.ViewPagerProcessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -162,10 +160,10 @@ public final class InflationInterceptor implements LayoutInflaterFactory {
             case "android.support.design.widget.FloatingActionButton":
                 view = new ATEFloatingActionButton(context, attrs, mKeyContext);
                 break;
-            case RecyclerViewProcessor.MAIN_CLASS:
+            case EdgeGlowTagProcessor.RECYCLERVIEW_CLASS:
                 view = new ATERecyclerView(context, attrs, mKeyContext);
                 break;
-            case NestedScrollViewProcessor.MAIN_CLASS:
+            case EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS:
                 view = new ATENestedScrollView(context, attrs, mKeyContext);
                 break;
             case "android.support.v4.widget.DrawerLayout":
@@ -174,10 +172,10 @@ public final class InflationInterceptor implements LayoutInflaterFactory {
             case NavigationViewProcessor.MAIN_CLASS:
                 view = new ATENavigationView(context, attrs, mKeyContext);
                 break;
-            case TabLayoutProcessor.MAIN_CLASS:
+            case TabLayoutTagProcessor.MAIN_CLASS:
                 view = new ATETabLayout(context, attrs, mKeyContext);
                 break;
-            case ViewPagerProcessor.MAIN_CLASS:
+            case EdgeGlowTagProcessor.VIEWPAGER_CLASS:
                 view = new ATEViewPager(context, attrs, mKeyContext);
                 break;
             case "android.support.design.widget.CoordinatorLayout":
