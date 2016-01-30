@@ -205,30 +205,6 @@ public final class ATE extends ATEBase {
             MDUtil.initMdSupport(activity, key);
     }
 
-    // TODO re-implement Fragment support
-//    public static void themeView(@NonNull android.support.v4.app.Fragment fragment, @Nullable String key) {
-//        if (fragment.getActivity() == null)
-//            throw new IllegalStateException("Fragment is not attached to an Activity yet.");
-//        final View fragmentView = fragment.getView();
-//        if (fragmentView == null)
-//            throw new IllegalStateException("Fragment does not have a View yet.");
-//        if (fragmentView instanceof ViewGroup)
-//            themeView(fragment.getActivity(), (ViewGroup) fragmentView, key);
-//        else themeView(fragment.getActivity(), fragmentView, key);
-//        if (fragment.getActivity() instanceof AppCompatActivity)
-//            themeView(fragment.getActivity(), key);
-//    }
-
-//    public static void themeView(@NonNull android.app.Fragment fragment, @Nullable String key) {
-//        if (fragment.getActivity() == null)
-//            throw new IllegalStateException("Fragment is not attached to an Activity yet.");
-//        else if (fragment.getView() == null)
-//            throw new IllegalStateException("Fragment does not have a View yet.");
-//        themeView(fragment.getActivity(), (ViewGroup) fragment.getView(), key);
-//        if (fragment.getActivity() instanceof AppCompatActivity)
-//            themeView(fragment.getActivity(), key);
-//    }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void applyTaskDescription(@NonNull Activity activity, @Nullable String key) {
         int color = 0;
