@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.SearchView;
 
 import com.afollestad.appthemeengine.tagprocessors.BackgroundTagProcessor;
+import com.afollestad.appthemeengine.tagprocessors.EdgeGlowTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.FontTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.TabLayoutTagProcessor;
 import com.afollestad.appthemeengine.tagprocessors.TagProcessor;
@@ -91,6 +92,7 @@ class ATEBase {
         mTagProcessors.put(TintTagProcessor.SELECTOR_PREFIX_LIGHT, new TintTagProcessor(false, true, true));
         mTagProcessors.put(TabLayoutTagProcessor.TEXT_PREFIX, new TabLayoutTagProcessor(true, false));
         mTagProcessors.put(TabLayoutTagProcessor.INDICATOR_PREFIX, new TabLayoutTagProcessor(false, true));
+        mTagProcessors.put(EdgeGlowTagProcessor.PREFIX, new EdgeGlowTagProcessor());
     }
 
     @Nullable
