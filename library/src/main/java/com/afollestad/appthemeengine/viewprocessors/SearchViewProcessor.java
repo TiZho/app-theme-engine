@@ -3,11 +3,13 @@ package com.afollestad.appthemeengine.viewprocessors;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.R;
 import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.util.TintHelper;
 
@@ -42,7 +44,7 @@ public class SearchViewProcessor implements ViewProcessor<View, Integer> {
             mSearchSrcTextViewField.setAccessible(true);
             final EditText mSearchSrcTextView = (EditText) mSearchSrcTextViewField.get(target);
             mSearchSrcTextView.setTextColor(tintColor);
-            mSearchSrcTextView.setHintTextColor(ATEUtil.adjustAlpha(tintColor, 0.5f));
+            mSearchSrcTextView.setHintTextColor(ContextCompat.getColor(context, ATEUtil.isColorLight(tintColor) ? R.color.ate_text_disabled_dark : R.color.ate_text_disabled_light));
             TintHelper.setCursorTint(mSearchSrcTextView, tintColor);
 
             Field field = cls.getDeclaredField("mSearchButton");
