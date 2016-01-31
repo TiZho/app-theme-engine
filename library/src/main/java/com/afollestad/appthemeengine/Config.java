@@ -455,6 +455,8 @@ public final class Config extends ConfigBase {
         if (context instanceof ATENavigationBarCustomizer) {
             int color = ((ATENavigationBarCustomizer) context).getNavigationBarColor();
             if (color != ATE.USE_DEFAULT) return color;
+        }  else if (!coloredNavigationBar(context, key)) {
+            return Color.BLACK;
         }
         return prefs(context, key).getInt(KEY_NAVIGATION_BAR_COLOR, primaryColor(context, key));
     }
@@ -649,6 +651,20 @@ public final class Config extends ConfigBase {
     public final static String TEXTSIZE_BODY = "body";
     public final static String TEXTSIZE_CAPTION = "caption";
 
+    public static boolean isLightToolbar(@NonNull Context context, @Nullable Toolbar toolbar, @Nullable String key, @ColorInt int toolbarColor) {
+        @Config.LightToolbarMode
+        final int lightToolbarMode = Config.lightToolbarMode(context, key, toolbar);
+        switch (lightToolbarMode) {
+            case Config.LIGHT_TOOLBAR_ON:
+                return true;
+            case Config.LIGHT_TOOLBAR_OFF:
+                return false;
+            default:
+            case Config.LIGHT_TOOLBAR_AUTO:
+                return ATEUtil.isColorLight(toolbarColor);
+        }
+    }
+
     @ColorInt
     public static int getToolbarTitleColor(@NonNull Context context, @Nullable Toolbar toolbar, @Nullable String key) {
         final int toolbarColor = Config.toolbarColor(context, key, toolbar);
@@ -657,27 +673,11 @@ public final class Config extends ConfigBase {
 
     @ColorInt
     public static int getToolbarTitleColor(@NonNull Context context, @Nullable Toolbar toolbar, @Nullable String key, @ColorInt int toolbarColor) {
-        boolean isLightMode;
-        @Config.LightToolbarMode
-        final int lightToolbarMode = Config.lightToolbarMode(context, key, toolbar);
-        switch (lightToolbarMode) {
-            case Config.LIGHT_TOOLBAR_ON:
-                isLightMode = true;
-                break;
-            case Config.LIGHT_TOOLBAR_OFF:
-                isLightMode = false;
-                break;
-            default:
-            case Config.LIGHT_TOOLBAR_AUTO:
-                isLightMode = ATEUtil.isColorLight(toolbarColor);
-                break;
-        }
-        return isLightMode ? Color.BLACK : Color.WHITE;
+        return ContextCompat.getColor(context, isLightToolbar(context, toolbar, key, toolbarColor) ? R.color.ate_primary_text_light : R.color.ate_primary_text_dark);
     }
 
     @ColorInt
     public static int getToolbarSubtitleColor(@NonNull Context context, @Nullable Toolbar toolbar, @Nullable String key, @ColorInt int toolbarColor) {
-        final int titleColor = getToolbarTitleColor(context, toolbar, key, toolbarColor);
-        return ATEUtil.adjustAlpha(titleColor, 0.5f);
+        return ContextCompat.getColor(context, isLightToolbar(context, toolbar, key, toolbarColor) ? R.color.ate_secondary_text_light : R.color.ate_secondary_text_dark);
     }
 }
