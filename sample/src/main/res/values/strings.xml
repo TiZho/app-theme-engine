@@ -78,6 +78,7 @@
     <string name="text_sizes">Text Sizes</string>
     <string name="defaultValue">Default</string>
     <string name="fragment_theming">Fragment Theming!</string>
+    <string name="drawer_widgets">Widgets</string>
     <string name="drawer_misc">Misc</string>
     <string name="misc">Miscellaneous</string>
     <string name="text_input_layout">Text Input Layout</string>

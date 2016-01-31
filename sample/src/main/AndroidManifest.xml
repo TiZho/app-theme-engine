@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.afollestad.appthemeenginesample">
+<manifest package="com.afollestad.appthemeenginesample"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.ActionBar">
-
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme"
@@ -19,32 +18,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".collapsingtb.CollapsingToolbarActivity"
             android:label="@string/collapsing_toolbar"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".rv.RecyclerViewSampleActivity"
             android:label="@string/rv_sample"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".tabs.TabSampleActivity"
             android:label="@string/tabs_sample"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".misc.MiscActivity"
             android:label="@string/misc"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
+        <activity android:name=".widgets.WidgetActivity"></activity>
     </application>
 
 </manifest>

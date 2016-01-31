@@ -18,6 +18,7 @@ import com.afollestad.appthemeenginesample.dialogs.AboutDialog;
 import com.afollestad.appthemeenginesample.misc.MiscActivity;
 import com.afollestad.appthemeenginesample.rv.RecyclerViewSampleActivity;
 import com.afollestad.appthemeenginesample.tabs.TabSampleActivity;
+import com.afollestad.appthemeenginesample.widgets.WidgetActivity;
 
 public class MainActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -92,6 +93,9 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
                         break;
                     case R.id.drawer_collapsingtoolbar:
                         startActivity(new Intent(MainActivity.this, CollapsingToolbarActivity.class));
+                        break;
+                    case R.id.drawer_widgets:
+                        startActivity(new Intent(MainActivity.this, WidgetActivity.class));
                         break;
                     case R.id.drawer_misc:
                         startActivity(new Intent(MainActivity.this, MiscActivity.class));

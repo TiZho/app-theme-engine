@@ -31,6 +31,12 @@
             android:title="@string/drawer_collapsingtoolbar" />
 
         <item
+            android:id="@+id/drawer_widgets"
+            android:checkable="false"
+            android:icon="@drawable/ic_check"
+            android:title="@string/drawer_widgets" />
+
+        <item
             android:id="@+id/drawer_misc"
             android:checkable="false"
             android:icon="@drawable/ic_bug"
