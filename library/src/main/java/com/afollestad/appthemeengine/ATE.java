@@ -38,7 +38,7 @@ import java.util.ArrayList;
  */
 public final class ATE extends ATEBase {
 
-    private static final String IGNORE_TAG = "ate_ignore";
+    public static final String IGNORE_TAG = "ate_ignore";
     public static final int USE_DEFAULT = Integer.MAX_VALUE;
 
     /**
@@ -261,7 +261,7 @@ public final class ATE extends ATEBase {
 
         if (toolbar != null && toolbar.getParent() instanceof CollapsingToolbarLayout)
             return; // collapsing toolbar handles the overflow color
-        ATEUtil.setOverflowButtonColor(activity, tintColor);
+        ATEUtil.setOverflowButtonColor(activity, toolbar, tintColor);
     }
 
     private ATE() {

@@ -9,21 +9,21 @@ import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.WindowDecorActionBar;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.ToolbarWidgetWrapper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.ATEActivity;
 import com.afollestad.appthemeengine.R;
 import com.afollestad.appthemeengine.inflation.InflationInterceptor;
@@ -101,34 +101,39 @@ public final class ATEUtil {
 
     @Nullable
     public static Toolbar getSupportActionBarView(@Nullable ActionBar ab) {
-        if (ab == null || !(ab instanceof WindowDecorActionBar)) return null;
+        if (ab == null) return null;
         try {
-            WindowDecorActionBar decorAb = (WindowDecorActionBar) ab;
-            Field field = WindowDecorActionBar.class.getDeclaredField("mDecorToolbar");
+            Field field = ab.getClass().getDeclaredField("mDecorToolbar");
             field.setAccessible(true);
-            ToolbarWidgetWrapper wrapper = (ToolbarWidgetWrapper) field.get(decorAb);
+            ToolbarWidgetWrapper wrapper = (ToolbarWidgetWrapper) field.get(ab);
             field = ToolbarWidgetWrapper.class.getDeclaredField("mToolbar");
             field.setAccessible(true);
             return (Toolbar) field.get(wrapper);
         } catch (Throwable t) {
-            throw new RuntimeException("Failed to retrieve Toolbar from AppCompat support ActionBar: " + t.getMessage(), t);
+            Log.d("ATEUtil", "Unable to get Toolbar from " + ab.getClass().getName());
+            return null;
         }
     }
 
-    public static void setOverflowButtonColor(@NonNull Activity activity, final @ColorInt int color) {
+    public static void setOverflowButtonColor(@NonNull Activity activity,
+                                              @Nullable Toolbar toolbar,
+                                              final @ColorInt int color) {
+        if (toolbar != null && toolbar.getTag() != null && ATE.IGNORE_TAG.equals(toolbar.getTag()))
+            return; // ignore tag was set, don't update the overflow
         final String overflowDescription = activity.getString(R.string.abc_action_menu_overflow_description);
-        final ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-        final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
+        final View target = toolbar != null ? toolbar :
+                (ViewGroup) activity.getWindow().getDecorView();
+        final ViewTreeObserver viewTreeObserver = target.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 final ArrayList<View> outViews = new ArrayList<>();
-                decorView.findViewsWithText(outViews, overflowDescription,
+                target.findViewsWithText(outViews, overflowDescription,
                         View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
                 if (outViews.isEmpty()) return;
                 final AppCompatImageView overflow = (AppCompatImageView) outViews.get(0);
                 overflow.setImageDrawable(TintHelper.createTintedDrawable(overflow.getDrawable(), color));
-                removeOnGlobalLayoutListener(decorView, this);
+                removeOnGlobalLayoutListener(target, this);
             }
         });
     }

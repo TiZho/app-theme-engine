@@ -44,6 +44,8 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
     public void process(@NonNull Context context, @Nullable String key, @Nullable Toolbar toolbar, @Nullable Menu menu) {
         if (toolbar == null && context instanceof AppCompatActivity)
             toolbar = ATEUtil.getSupportActionBarView(((AppCompatActivity) context).getSupportActionBar());
+        if (toolbar != null && ATE.IGNORE_TAG.equals(toolbar.getTag()))
+            return;
 
         final int toolbarColor = Config.toolbarColor(context, key, toolbar);
         if (toolbar == null) {

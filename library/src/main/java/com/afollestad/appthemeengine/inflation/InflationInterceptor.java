@@ -105,167 +105,169 @@ public final class InflationInterceptor implements LayoutInflaterFactory {
                 name.equals("android.support.design.internal.NavigationMenuItemView");
     }
 
+    private boolean skipTheming(@Nullable View parent) {
+        return parent != null && (ATE.IGNORE_TAG.equals(parent.getTag()) ||
+                parent.getParent() != null && ATE.IGNORE_TAG.equals(((View) parent.getParent()).getTag()));
+    }
+
     @Override
     public View onCreateView(View parent, final String name, Context context, AttributeSet attrs) {
-        View view;
+        View view = null;
 
-        switch (name) {
-            case "android.support.v7.widget.AppCompatTextView":
-            case "TextView":
-                view = new ATETextView(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.widget.AppCompatEdiText":
-            case "EditText":
-                view = new ATEEditText(context, attrs, mKeyContext,
-                        parent != null && parent instanceof TextInputLayout);
-                break;
-            case "android.support.v7.widget.AppCompatCheckBox":
-            case "CheckBox":
-                view = new ATECheckBox(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.widget.AppCompatRadioButton":
-            case "RadioButton":
-                view = new ATERadioButton(context, attrs, mKeyContext);
-                break;
-            case "Switch":
-                view = new ATEStockSwitch(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.widget.SwitchCompat":
-                view = new ATESwitch(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.widget.AppCompatSeekBar":
-            case "SeekBar":
-                view = new ATESeekBar(context, attrs, mKeyContext);
-                break;
-            case "ProgressBar":
-                view = new ATEProgressBar(context, attrs, mKeyContext);
-                break;
-            case ToolbarProcessor.MAIN_CLASS:
-                ATEToolbar toolbar = new ATEToolbar(context, attrs, mKeyContext);
-                ATE.addPostInflationView(toolbar);
-                view = toolbar;
-                break;
-            case "ListView":
-                view = new ATEListView(context, attrs, mKeyContext);
-                break;
-            case "ScrollView":
-                view = new ATEScrollView(context, attrs, mKeyContext);
-                break;
-            case "Spinner":
-                view = new ATEStockSpinner(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.widget.AppCompatSpinner":
-                view = new ATESpinner(context, attrs, mKeyContext);
-                break;
-            case "android.support.design.widget.FloatingActionButton":
-                view = new ATEFloatingActionButton(context, attrs, mKeyContext);
-                break;
-            case EdgeGlowTagProcessor.RECYCLERVIEW_CLASS:
-                view = new ATERecyclerView(context, attrs, mKeyContext);
-                break;
-            case EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS:
-                view = new ATENestedScrollView(context, attrs, mKeyContext);
-                break;
-            case "android.support.v4.widget.DrawerLayout":
-                view = new ATEDrawerLayout(context, attrs, mKeyContext);
-                break;
-            case NavigationViewProcessor.MAIN_CLASS:
-                view = new ATENavigationView(context, attrs, mKeyContext);
-                break;
-            case TabLayoutTagProcessor.MAIN_CLASS:
-                view = new ATETabLayout(context, attrs, mKeyContext);
-                break;
-            case EdgeGlowTagProcessor.VIEWPAGER_CLASS:
-                view = new ATEViewPager(context, attrs, mKeyContext);
-                break;
-            case "android.support.design.widget.CoordinatorLayout":
-                view = new ATECoordinatorLayout(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.view.menu.ActionMenuItemView":
-                view = new ATEActionMenuItemView(context, attrs, mKeyContext);
-                break;
-            case "android.support.v7.widget.SearchView$SearchAutoComplete":
-                view = new ATESearchViewAutoComplete(context, attrs, mKeyContext);
-                break;
-//            case SearchViewProcessor.MAIN_CLASS:
-//                view = new ATESearchView(context, attrs, mKeyContext);
-//                break;
-//            case "SearchView":
-//                view = new ATEStockSearchView(context, attrs, mKeyContext);
-//                break;
-            case "CheckedTextView":
-                view = new ATECheckedTextView(context, attrs, mKeyContext);
-                break;
-            default: {
-                // First, check if the AppCompatDelegate will give us a view, usually (maybe always) null.
-                if (mDelegate != null) {
-                    view = mDelegate.createView(parent, name, context, attrs);
-                    if (view == null && mKeyContext != null)
-                        view = mKeyContext.onCreateView(parent, name, context, attrs);
-                    else view = null;
-                } else {
-                    view = null;
-                }
+        if (!skipTheming(parent)) {
+            switch (name) {
+                case "android.support.v7.widget.AppCompatTextView":
+                case "TextView":
+                    view = new ATETextView(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.widget.AppCompatEdiText":
+                case "EditText":
+                    view = new ATEEditText(context, attrs, mKeyContext,
+                            parent != null && parent instanceof TextInputLayout);
+                    break;
+                case "android.support.v7.widget.AppCompatCheckBox":
+                case "CheckBox":
+                    view = new ATECheckBox(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.widget.AppCompatRadioButton":
+                case "RadioButton":
+                    view = new ATERadioButton(context, attrs, mKeyContext);
+                    break;
+                case "Switch":
+                    view = new ATEStockSwitch(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.widget.SwitchCompat":
+                    view = new ATESwitch(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.widget.AppCompatSeekBar":
+                case "SeekBar":
+                    view = new ATESeekBar(context, attrs, mKeyContext);
+                    break;
+                case "ProgressBar":
+                    view = new ATEProgressBar(context, attrs, mKeyContext);
+                    break;
+                case ToolbarProcessor.MAIN_CLASS:
+                    ATEToolbar toolbar = new ATEToolbar(context, attrs, mKeyContext);
+                    ATE.addPostInflationView(toolbar);
+                    view = toolbar;
+                    break;
+                case "ListView":
+                    view = new ATEListView(context, attrs, mKeyContext);
+                    break;
+                case "ScrollView":
+                    view = new ATEScrollView(context, attrs, mKeyContext);
+                    break;
+                case "Spinner":
+                    view = new ATEStockSpinner(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.widget.AppCompatSpinner":
+                    view = new ATESpinner(context, attrs, mKeyContext);
+                    break;
+                case "android.support.design.widget.FloatingActionButton":
+                    view = new ATEFloatingActionButton(context, attrs, mKeyContext);
+                    break;
+                case EdgeGlowTagProcessor.RECYCLERVIEW_CLASS:
+                    view = new ATERecyclerView(context, attrs, mKeyContext);
+                    break;
+                case EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS:
+                    view = new ATENestedScrollView(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v4.widget.DrawerLayout":
+                    view = new ATEDrawerLayout(context, attrs, mKeyContext);
+                    break;
+                case NavigationViewProcessor.MAIN_CLASS:
+                    view = new ATENavigationView(context, attrs, mKeyContext);
+                    break;
+                case TabLayoutTagProcessor.MAIN_CLASS:
+                    view = new ATETabLayout(context, attrs, mKeyContext);
+                    break;
+                case EdgeGlowTagProcessor.VIEWPAGER_CLASS:
+                    view = new ATEViewPager(context, attrs, mKeyContext);
+                    break;
+                case "android.support.design.widget.CoordinatorLayout":
+                    view = new ATECoordinatorLayout(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.view.menu.ActionMenuItemView":
+                    view = new ATEActionMenuItemView(context, attrs, mKeyContext);
+                    break;
+                case "android.support.v7.widget.SearchView$SearchAutoComplete":
+                    view = new ATESearchViewAutoComplete(context, attrs, mKeyContext);
+                    break;
+                case "CheckedTextView":
+                    view = new ATECheckedTextView(context, attrs, mKeyContext);
+                    break;
+            }
+        } else {
+            LOG("Parent of " + name + " had the ate_ignore tag set, inflating default.");
+        }
 
-                if (isBlackListedForApply(name))
-                    return view;
+        if (view == null) {
+            // First, check if the AppCompatDelegate will give us a view, usually (maybe always) null.
+            if (mDelegate != null) {
+                view = mDelegate.createView(parent, name, context, attrs);
+                if (view == null && mKeyContext != null)
+                    view = mKeyContext.onCreateView(parent, name, context, attrs);
+                else view = null;
+            } else {
+                view = null;
+            }
 
-                // Mimic code of LayoutInflater using reflection tricks (this would normally be run when this factory returns null).
-                // We need to intercept the default behavior rather than allowing the LayoutInflater to handle it after this method returns.
-                if (view == null) {
-                    try {
-                        Context viewContext;
-                        final boolean inheritContext = false; // TODO will this ever need to be true?
-                        //noinspection PointlessBooleanExpression,ConstantConditions
-                        if (parent != null && inheritContext) {
-                            viewContext = parent.getContext();
-                        } else {
-                            viewContext = mLi.getContext();
-                        }
-                        // Apply a theme wrapper, if requested.
-                        final TypedArray ta = viewContext.obtainStyledAttributes(attrs, ATTRS_THEME);
-                        final int themeResId = ta.getResourceId(0, 0);
-                        if (themeResId != 0) {
-                            viewContext = new ContextThemeWrapper(viewContext, themeResId);
-                        }
-                        ta.recycle();
+            if (isBlackListedForApply(name))
+                return view;
 
-                        Object[] mConstructorArgs;
-                        try {
-                            mConstructorArgs = (Object[]) mConstructorArgsField.get(mLi);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException("Failed to retrieve the mConstructorArgsField field.", e);
-                        }
-
-                        final Object lastContext = mConstructorArgs[0];
-                        mConstructorArgs[0] = viewContext;
-                        try {
-                            if (-1 == name.indexOf('.')) {
-                                view = (View) mOnCreateViewMethod.invoke(mLi, parent, name, attrs);
-                            } else {
-                                view = (View) mCreateViewMethod.invoke(mLi, name, null, attrs);
-                            }
-                        } catch (Exception e) {
-                            LOG("Failed to inflate %s: %s", name, e.getMessage());
-                            e.printStackTrace();
-                        } finally {
-                            mConstructorArgs[0] = lastContext;
-                        }
-                    } catch (Throwable t) {
-                        throw new RuntimeException(String.format("An error occurred while inflating View %s: %s", name, t.getMessage()), t);
+            // Mimic code of LayoutInflater using reflection tricks (this would normally be run when this factory returns null).
+            // We need to intercept the default behavior rather than allowing the LayoutInflater to handle it after this method returns.
+            if (view == null) {
+                try {
+                    Context viewContext;
+                    final boolean inheritContext = false; // TODO will this ever need to be true?
+                    //noinspection PointlessBooleanExpression,ConstantConditions
+                    if (parent != null && inheritContext) {
+                        viewContext = parent.getContext();
+                    } else {
+                        viewContext = mLi.getContext();
                     }
-                }
+                    // Apply a theme wrapper, if requested.
+                    final TypedArray ta = viewContext.obtainStyledAttributes(attrs, ATTRS_THEME);
+                    final int themeResId = ta.getResourceId(0, 0);
+                    if (themeResId != 0) {
+                        viewContext = new ContextThemeWrapper(viewContext, themeResId);
+                    }
+                    ta.recycle();
 
-                if (view != null) {
-                    if (view.getClass().getSimpleName().startsWith("ATE"))
-                        return view;
-                    String key = null;
-                    if (context instanceof ATEActivity)
-                        key = ((ATEActivity) context).getATEKey();
-                    ATE.themeView(view, key);
-                }
+                    Object[] mConstructorArgs;
+                    try {
+                        mConstructorArgs = (Object[]) mConstructorArgsField.get(mLi);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Failed to retrieve the mConstructorArgsField field.", e);
+                    }
 
-                break;
+                    final Object lastContext = mConstructorArgs[0];
+                    mConstructorArgs[0] = viewContext;
+                    try {
+                        if (-1 == name.indexOf('.')) {
+                            view = (View) mOnCreateViewMethod.invoke(mLi, parent, name, attrs);
+                        } else {
+                            view = (View) mCreateViewMethod.invoke(mLi, name, null, attrs);
+                        }
+                    } catch (Exception e) {
+                        LOG("Failed to inflate %s: %s", name, e.getMessage());
+                        e.printStackTrace();
+                    } finally {
+                        mConstructorArgs[0] = lastContext;
+                    }
+                } catch (Throwable t) {
+                    throw new RuntimeException(String.format("An error occurred while inflating View %s: %s", name, t.getMessage()), t);
+                }
+            }
+
+            if (view != null && !skipTheming(parent)) {
+                if (view.getClass().getSimpleName().startsWith("ATE"))
+                    return view;
+                String key = null;
+                if (context instanceof ATEActivity)
+                    key = ((ATEActivity) context).getATEKey();
+                ATE.themeView(view, key);
             }
         }
 
