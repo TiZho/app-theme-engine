@@ -554,7 +554,7 @@ public final class Config extends ConfigBase {
     @ColorInt
     public static int navigationViewNormalIcon(@NonNull Context context, @Nullable String key, boolean darkTheme) {
         final int defaultColor = ContextCompat.getColor(context, darkTheme ?
-                R.color.ate_navigationview_normalicon_dark : R.color.ate_navigationview_normalicon_light);
+                R.color.ate_icon_dark : R.color.ate_icon_light);
         return prefs(context, key).getInt(KEY_NAVIGATIONVIEW_NORMAL_ICON, defaultColor);
     }
 
@@ -562,7 +562,7 @@ public final class Config extends ConfigBase {
     @ColorInt
     public static int navigationViewNormalText(@NonNull Context context, @Nullable String key, boolean darkTheme) {
         final int defaultColor = ContextCompat.getColor(context, darkTheme ?
-                R.color.ate_navigationview_normaltext_dark : R.color.ate_navigationview_normaltext_light);
+                R.color.ate_primary_text_dark : R.color.ate_primary_text_light);
         return prefs(context, key).getInt(KEY_NAVIGATIONVIEW_NORMAL_TEXT, defaultColor);
     }
 
@@ -570,7 +570,7 @@ public final class Config extends ConfigBase {
     @ColorInt
     public static int navigationViewSelectedBg(@NonNull Context context, @Nullable String key, boolean darkTheme) {
         final int defaultColor = ContextCompat.getColor(context, darkTheme ?
-                R.color.ate_navigationview_selectedbg_dark : R.color.ate_navigationview_selectedbg_light);
+                R.color.ate_navigation_drawer_selected_dark : R.color.ate_navigation_drawer_selected_light);
         return prefs(context, key).getInt(KEY_NAVIGATIONVIEW_SELECTED_BG, defaultColor);
     }
 

@@ -223,37 +223,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                style="?buttonBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_weight="1"
-                    android:id="@+id/button_borderless"
-                    style="?buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_margin="@dimen/content_inset_half"
-                    android:clickable="true"
-                    android:tag="tint_selector_lighter|accent_color,text_size|body"
-                    android:text="@string/button" />
-
-                <Button
-                    android:layout_weight="1"
-                    android:id="@+id/button_borderless_disabled"
-                    style="?buttonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_margin="@dimen/content_inset_half"
-                    android:clickable="true"
-                    android:enabled="false"
-                    android:tag="tint_selector_lighter|accent_color,text_size|body"
-                    android:text="@string/button" />
-
-            </LinearLayout>
-
             <ProgressBar
                 android:id="@+id/progress"
                 android:layout_width="wrap_content"
@@ -264,6 +233,15 @@
 
             <SeekBar
                 android:id="@+id/seek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/content_inset_half"
+                android:max="100"
+                android:progress="60"
+                android:tag="tint|accent_color" />
+
+            <SeekBar
+                android:id="@+id/seek_disabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/content_inset_half"

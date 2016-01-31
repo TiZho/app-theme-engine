@@ -3,7 +3,6 @@ package com.afollestad.appthemeengine.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -57,12 +56,13 @@ public final class TintHelper {
     }
 
     @SuppressWarnings("deprecation")
-    public static void setTintSelector(@NonNull View view, @ColorInt int color, boolean darker, boolean useDarkTheme) {
-        final int disabled = ContextCompat.getColor(view.getContext(), useDarkTheme ?
-                R.color.ate_disabled_button_dark : R.color.ate_disabled_button_light);
+    public static void setTintSelector(@NonNull View view, @ColorInt final int color, final boolean darker, final boolean useDarkTheme) {
+        final boolean isColorLight = ATEUtil.isColorLight(color);
+        final int disabled = ContextCompat.getColor(view.getContext(), useDarkTheme ? R.color.ate_button_disabled_dark : R.color.ate_button_disabled_light);
         final int pressed = ATEUtil.shiftColor(color, darker ? 0.9f : 1.1f);
         final int activated = ATEUtil.shiftColor(color, darker ? 1.1f : 0.9f);
-        final int rippleColor = getDefaultRippleColor(view.getContext(), ATEUtil.isColorLight(color));
+        final int rippleColor = getDefaultRippleColor(view.getContext(), isColorLight);
+        final int textColor = ContextCompat.getColor(view.getContext(), isColorLight ? R.color.ate_primary_text_light : R.color.ate_primary_text_dark);
 
         final ColorStateList sl;
         if (view instanceof Button) {
@@ -75,9 +75,7 @@ public final class TintHelper {
 
             // Disabled text color state for buttons, may get overridden later by ATE tags
             final Button button = (Button) view;
-            final int defaultTextColor = ATEUtil.isColorLight(color) ?
-                    Color.BLACK : Color.WHITE;
-            button.setTextColor(getDisabledColorStateList(defaultTextColor, Color.BLACK));
+            button.setTextColor(getDisabledColorStateList(textColor, ContextCompat.getColor(view.getContext(), useDarkTheme ? R.color.ate_button_text_disabled_dark : R.color.ate_button_text_disabled_light)));
         } else if (view instanceof FloatingActionButton) {
             // FloatingActionButton doesn't support disabled state?
             sl = new ColorStateList(new int[][]{
@@ -87,6 +85,13 @@ public final class TintHelper {
                     color,
                     pressed
             });
+
+            final FloatingActionButton fab = (FloatingActionButton) view;
+            fab.setRippleColor(rippleColor);
+            fab.setBackgroundTintList(sl);
+            if (fab.getDrawable() != null)
+                fab.setImageDrawable(createTintedDrawable(fab.getDrawable(), textColor));
+            return;
         } else {
             sl = new ColorStateList(
                     new int[][]{
@@ -106,18 +111,6 @@ public final class TintHelper {
             );
         }
 
-        // TODO use other theme values in place of these?
-        final int tintColor = ATEUtil.isColorLight(color) ? Color.BLACK : Color.WHITE;
-
-        if (view instanceof FloatingActionButton) {
-            final FloatingActionButton fab = (FloatingActionButton) view;
-            fab.setRippleColor(rippleColor);
-            fab.setBackgroundTintList(sl);
-            if (fab.getDrawable() != null)
-                fab.setImageDrawable(createTintedDrawable(fab.getDrawable(), tintColor));
-            return;
-        }
-
         Drawable drawable = view.getBackground();
         if (drawable != null) {
             drawable = createTintedDrawable(drawable, sl);
@@ -126,7 +119,7 @@ public final class TintHelper {
 
         if (view instanceof TextView && !(view instanceof Button)) {
             final TextView tv = (TextView) view;
-            tv.setTextColor(getDisabledColorStateList(tintColor, ATEUtil.adjustAlpha(tintColor, 0.4f)));
+            tv.setTextColor(getDisabledColorStateList(textColor, ContextCompat.getColor(view.getContext(), isColorLight ? R.color.ate_text_disabled_light : R.color.ate_text_disabled_dark)));
         }
     }
 
@@ -195,8 +188,9 @@ public final class TintHelper {
                 new int[]{android.R.attr.state_enabled, -android.R.attr.state_checked},
                 new int[]{android.R.attr.state_enabled, android.R.attr.state_checked}
         }, new int[]{
-                ContextCompat.getColor(radioButton.getContext(), useDarker ? R.color.ate_disabled_radiobutton_dark : R.color.ate_disabled_radiobutton_light),
-                ATEUtil.resolveColor(radioButton.getContext(), R.attr.colorControlNormal),
+                // Rdio button includes own alpha for disabled state
+                ATEUtil.stripAlpha(ContextCompat.getColor(radioButton.getContext(), useDarker ? R.color.ate_control_disabled_dark : R.color.ate_control_disabled_light)),
+                ContextCompat.getColor(radioButton.getContext(), useDarker ? R.color.ate_control_normal_dark : R.color.ate_control_normal_light),
                 color
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -209,7 +203,7 @@ public final class TintHelper {
 
     public static void setTint(@NonNull SeekBar seekBar, @ColorInt int color, boolean useDarker) {
         final ColorStateList s1 = getDisabledColorStateList(color,
-                ContextCompat.getColor(seekBar.getContext(), useDarker ? R.color.ate_disabled_seekbar_dark : R.color.ate_disabled_seekbar_light));
+                ContextCompat.getColor(seekBar.getContext(), useDarker ? R.color.ate_control_disabled_dark : R.color.ate_control_disabled_light));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             seekBar.setThumbTintList(s1);
             seekBar.setProgressTintList(s1);
@@ -261,8 +255,8 @@ public final class TintHelper {
                 new int[]{android.R.attr.state_enabled, -android.R.attr.state_pressed, -android.R.attr.state_focused},
                 new int[]{}
         }, new int[]{
-                ContextCompat.getColor(editText.getContext(), useDarker ? R.color.ate_disabled_edittext_dark : R.color.ate_disabled_edittext_light),
-                ContextCompat.getColor(editText.getContext(), useDarker ? R.color.ate_colorControlNormal_dark : R.color.ate_colorControlNormal_light),
+                ContextCompat.getColor(editText.getContext(), useDarker ? R.color.ate_text_disabled_dark : R.color.ate_text_disabled_light),
+                ContextCompat.getColor(editText.getContext(), useDarker ? R.color.ate_control_normal_dark : R.color.ate_control_normal_light),
                 color
         });
         if (editText instanceof AppCompatEditText) {
@@ -279,8 +273,8 @@ public final class TintHelper {
                 new int[]{android.R.attr.state_enabled, -android.R.attr.state_checked},
                 new int[]{android.R.attr.state_enabled, android.R.attr.state_checked}
         }, new int[]{
-                ContextCompat.getColor(box.getContext(), useDarker ? R.color.ate_disabled_checkbox_dark : R.color.ate_disabled_checkbox_light),
-                ContextCompat.getColor(box.getContext(), useDarker ? R.color.ate_colorControlNormal_dark : R.color.ate_colorControlNormal_light),
+                ContextCompat.getColor(box.getContext(), useDarker ? R.color.ate_control_disabled_dark : R.color.ate_control_disabled_light),
+                ContextCompat.getColor(box.getContext(), useDarker ? R.color.ate_control_normal_dark : R.color.ate_control_normal_light),
                 color
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -301,17 +295,18 @@ public final class TintHelper {
         }
         tint = ATEUtil.adjustAlpha(tint, (compatSwitch && !thumb) ? 0.5f : 1.0f);
         int disabled;
-        int off;
+        int normal;
         if (thumb) {
-            disabled = ContextCompat.getColor(context, useDarker ? R.color.ate_disabled_switch_thumb_dark : R.color.ate_disabled_switch_thumb_light);
-            off = useDarker ? Color.parseColor("#BDBDBD") : Color.parseColor("#FAFAFA");
+            disabled = ContextCompat.getColor(context, useDarker ? R.color.ate_switch_thumb_disabled_dark : R.color.ate_switch_thumb_disabled_light);
+            normal = ContextCompat.getColor(context, useDarker ? R.color.ate_switch_thumb_normal_dark : R.color.ate_switch_thumb_normal_light);
         } else {
-            disabled = ContextCompat.getColor(context, useDarker ? R.color.ate_disabled_switch_track_dark : R.color.ate_disabled_switch_track_light);
-            off = useDarker ? ATEUtil.adjustAlpha(Color.WHITE, compatSwitch ? 0.3f : 1.0f) : ATEUtil.adjustAlpha(Color.BLACK, compatSwitch ? 0.26f : 1.0f);
+            disabled = ContextCompat.getColor(context, useDarker ? R.color.ate_switch_track_disabled_dark : R.color.ate_switch_track_disabled_light);
+            normal = ContextCompat.getColor(context, useDarker ? R.color.ate_switch_track_normal_dark : R.color.ate_switch_track_normal_light);
         }
 
+        // Stock switch includes its own alpha
         if (!compatSwitch) {
-            disabled = ATEUtil.stripAlpha(disabled);
+            normal = ATEUtil.stripAlpha(normal);
         }
 
         final ColorStateList sl = new ColorStateList(
@@ -323,7 +318,7 @@ public final class TintHelper {
                 },
                 new int[]{
                         disabled,
-                        off,
+                        normal,
                         tint,
                         tint
                 }

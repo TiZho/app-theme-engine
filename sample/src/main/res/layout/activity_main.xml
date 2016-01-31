@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -68,29 +68,13 @@
                         android:tag="tint|accent_color,text_color|primary_text,text_size|body"
                         android:text="@string/checkbox" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <android.support.v7.widget.SwitchCompat
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/content_inset"
-                        android:orientation="horizontal">
-
-                        <Switch
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:tag="tint|accent_color,text_color|primary_text,text_size|body"
-                            android:text="@string/switchView" />
-
-                        <android.support.v7.widget.SwitchCompat
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/content_inset"
-                            android:layout_marginStart="@dimen/content_inset"
-                            android:checked="true"
-                            android:tag="tint|accent_color,text_color|primary_text,text_size|body"
-                            android:text="@string/switchViewCompat" />
-
-                    </LinearLayout>
+                        android:checked="true"
+                        android:tag="tint|accent_color,text_color|primary_text,text_size|body"
+                        android:text="@string/switchViewCompat" />
 
                     <RadioButton
                         android:layout_width="wrap_content"

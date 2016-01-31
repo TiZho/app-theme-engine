@@ -33,7 +33,7 @@
         <item
             android:id="@+id/drawer_widgets"
             android:checkable="false"
-            android:icon="@drawable/ic_check"
+            android:icon="@drawable/ic_checkbox_marked"
             android:title="@string/drawer_widgets" />
 
         <item

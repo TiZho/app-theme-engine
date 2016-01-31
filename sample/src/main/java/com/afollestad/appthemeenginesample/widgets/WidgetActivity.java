@@ -11,5 +11,7 @@ public class WidgetActivity extends BaseThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget);
+
+        findViewById(R.id.seek_disabled).setEnabled(false);
     }
 }
