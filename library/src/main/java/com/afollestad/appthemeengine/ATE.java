@@ -62,6 +62,13 @@ public final class ATE extends ATEBase {
         }
     }
 
+    public static void cleanup() {
+        if(mPostInflationApply != null) {
+            mPostInflationApply.clear();
+            mPostInflationApply = null;
+        }
+    }
+
     public static Config config(@NonNull Context context, @Nullable String key) {
         return new Config(context, key);
     }

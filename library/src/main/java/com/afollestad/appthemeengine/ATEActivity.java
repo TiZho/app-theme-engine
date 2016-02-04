@@ -46,6 +46,13 @@ public class ATEActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (isFinishing())
+            ATE.cleanup();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         ATE.themeOverflow(this, getATEKey());
         return super.onCreateOptionsMenu(menu);
