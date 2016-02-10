@@ -276,6 +276,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
                 e.printStackTrace();
             }
 
+            // credits: https://snow.dog/blog/how-to-dynamicaly-change-android-toolbar-icons-color/
             final PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
             for (int i = 0; i < toolbar.getChildCount(); i++) {
                 final View v = toolbar.getChildAt(i);

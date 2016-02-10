@@ -88,9 +88,16 @@ public final class ATEUtil {
         if (color == Color.BLACK) return false;
         else if (color == Color.WHITE || color == Color.TRANSPARENT) return true;
         final double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
-        return darkness > 0.4D && Color.alpha(color) < 129.0D || darkness < 0.4;
+        return darkness < 0.4;
     }
 
+    // optional convenience method, this can be called when we have information about the background color and want to consider it
+    public static boolean isColorLight(@ColorInt int color, @ColorInt int bgColor) {
+        if (Color.alpha(color) < 128) { // if the color is less than 50% visible rely on the background color
+            return isColorLight(bgColor); // one could use some kind of color mixing here before passing the color
+        }
+        return isColorLight(color);
+    }
 
     @ColorInt
     public static int invertColor(@ColorInt int color) {
