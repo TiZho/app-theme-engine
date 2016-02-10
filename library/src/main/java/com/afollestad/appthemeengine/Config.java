@@ -33,7 +33,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * @author Aidan Follestad (afollestad)
  */
-public final class Config extends ConfigBase {
+public final class Config implements ConfigKeys, ConfigInterface {
 
     private final Context mContext;
     private final String mKey;
