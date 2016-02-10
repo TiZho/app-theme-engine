@@ -28,7 +28,7 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Default config
-        if (!ATE.config(this, "light_theme").isConfigured(2)) {
+        if (!ATE.config(this, "light_theme").isConfigured(3)) {
             ATE.config(this, "light_theme")
                     .activityTheme(R.style.AppTheme)
                     .primaryColorRes(R.color.colorPrimaryLightDefault)
@@ -38,7 +38,7 @@ public class MainActivity extends BaseThemedActivity implements NavigationView.O
                     .navigationViewSelectedTextRes(R.color.colorAccentLightDefault)
                     .commit();
         }
-        if (!ATE.config(this, "dark_theme").isConfigured(2)) {
+        if (!ATE.config(this, "dark_theme").isConfigured(3)) {
             ATE.config(this, "dark_theme")
                     .activityTheme(R.style.AppThemeDark)
                     .primaryColorRes(R.color.colorPrimaryDarkDefault)
