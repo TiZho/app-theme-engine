@@ -12,6 +12,7 @@ abstract class ConfigBase implements ConfigInterface {
     protected final static String VALUES_CHANGED = "values_changed";
 
     protected final static String KEY_ACTIVITY_THEME = "activity_theme";
+    protected final static String KEY_ACTIVITY_THEME_DEFTYPE = "activity_theme_deftype";
 
     protected final static String KEY_PRIMARY_COLOR = "primary_color";
     protected final static String KEY_PRIMARY_COLOR_DARK = "primary_color_dark";

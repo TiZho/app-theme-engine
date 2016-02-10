@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.annotation.AttrRes;
 import android.support.annotation.CheckResult;
@@ -68,7 +69,11 @@ public final class Config extends ConfigBase {
 
     @Override
     public Config activityTheme(@StyleRes int theme) {
-        mEditor.putInt(KEY_ACTIVITY_THEME, theme);
+        final Resources r = mContext.getResources();
+        final String name = r.getResourceName(theme);
+        final String defType = r.getResourceTypeName(theme);
+        mEditor.putString(KEY_ACTIVITY_THEME, name);
+        mEditor.putString(KEY_ACTIVITY_THEME_DEFTYPE, defType);
         return this;
     }
 
@@ -406,7 +411,17 @@ public final class Config extends ConfigBase {
     @CheckResult
     @StyleRes
     public static int activityTheme(@NonNull Context context, @Nullable String key) {
-        return prefs(context, key).getInt(KEY_ACTIVITY_THEME, 0);
+        final SharedPreferences prefs = prefs(context, key);
+        int value = prefs.getInt(KEY_ACTIVITY_THEME, 0);
+        if (value == 0) {
+            final String valueStr = prefs.getString(KEY_ACTIVITY_THEME, null);
+            String valueTypeStr = prefs.getString(KEY_ACTIVITY_THEME_DEFTYPE, null);
+            if (valueStr != null) {
+                if (valueTypeStr == null) valueTypeStr = "style";
+                value = context.getResources().getIdentifier(valueStr, valueTypeStr, context.getPackageName());
+            }
+        }
+        return value;
     }
 
     @CheckResult
@@ -455,7 +470,7 @@ public final class Config extends ConfigBase {
         if (context instanceof ATENavigationBarCustomizer) {
             int color = ((ATENavigationBarCustomizer) context).getNavigationBarColor();
             if (color != ATE.USE_DEFAULT) return color;
-        }  else if (!coloredNavigationBar(context, key)) {
+        } else if (!coloredNavigationBar(context, key)) {
             return Color.BLACK;
         }
         return prefs(context, key).getInt(KEY_NAVIGATION_BAR_COLOR, primaryColor(context, key));
