@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
@@ -15,11 +17,15 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
@@ -89,10 +95,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
             if (collapsingToolbar.getParent() instanceof AppBarLayout) {
                 AppBarLayout appbarLayout = (AppBarLayout) collapsingToolbar.getParent();
                 try {
-                    if (mCollapsingToolbarListener == null)
-                        mCollapsingToolbarListener = new ScrimsOffsetListener(context, key, toolbar, collapsingToolbar, menu);
-                    else appbarLayout.removeOnOffsetChangedListener(mCollapsingToolbarListener);
-                    appbarLayout.addOnOffsetChangedListener(mCollapsingToolbarListener);
+                    appbarLayout.addOnOffsetChangedListener(new ScrimsOffsetListener(context, key, toolbar, collapsingToolbar, menu));
                 } catch (Exception e) {
                     throw new RuntimeException("An error occurred while setting up the AppBarLayout offset listener.", e);
                 }
@@ -114,8 +117,6 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
             toolbar.setNavigationIcon(TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), tintColor));
     }
 
-    private static ScrimsOffsetListener mCollapsingToolbarListener = null;
-
     public static class ScrimsOffsetListener implements AppBarLayout.OnOffsetChangedListener {
 
         private Object mCollapsingTextHelper;
@@ -132,7 +133,6 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
         private AppCompatImageView mOverflowView;
 
         private Drawable mOriginalNavIcon;
-        private Drawable[] mOriginalMenuIcons;
         private Drawable mOriginalOverflowIcon;
 
         private int mCollapsedColor;
@@ -219,25 +219,6 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
             }
         }
 
-        private void tintMenu(Menu menu, @ColorInt int tintColor) {
-            ArrayList<Drawable> firstPassDrawables = null;
-            if (mOriginalMenuIcons == null)
-                firstPassDrawables = new ArrayList<>(4);
-            for (int i = 0; i < menu.size(); i++) {
-                final MenuItem item = menu.getItem(i);
-                final Drawable origIcon;
-                if (firstPassDrawables != null) {
-                    origIcon = item.getIcon();
-                    firstPassDrawables.add(item.getIcon());
-                } else {
-                    origIcon = mOriginalMenuIcons[i];
-                }
-                item.setIcon(TintHelper.createTintedDrawable(origIcon, tintColor));
-            }
-            if (firstPassDrawables != null)
-                mOriginalMenuIcons = firstPassDrawables.toArray(new Drawable[firstPassDrawables.size()]);
-        }
-
         private void invalidateMenu() {
             // Mimic CollapsingToolbarLayout's CollapsingTextHelper
             final WindowInsetsCompat mLastInsets = getLastInsets();
@@ -263,7 +244,7 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
                 mToolbar.setNavigationIcon(TintHelper.createTintedDrawable(mOriginalNavIcon, tintColor));
 
             // Tint action buttons
-            tintMenu(mMenu, tintColor);
+            tintMenu(mToolbar, mMenu, tintColor);
 
             // Tint overflow
             if (mOriginalOverflowIcon == null) {
@@ -279,6 +260,89 @@ public class ToolbarProcessor implements ViewProcessor<Toolbar, Menu> {
             }
             if (mOverflowView != null)
                 mOverflowView.setImageDrawable(TintHelper.createTintedDrawable(mOriginalOverflowIcon, tintColor));
+        }
+
+        // Some things done within this method might look weird, but they are all needed.
+        @SuppressWarnings("unchecked")
+        public static void tintMenu(@NonNull Toolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
+            try {
+                final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");
+                field.setAccessible(true);
+                Drawable collapseIcon = (Drawable) field.get(toolbar);
+                if (collapseIcon != null) {
+                    field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, color));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            final PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+            for (int i = 0; i < toolbar.getChildCount(); i++) {
+                final View v = toolbar.getChildAt(i);
+                // We can't iterate through the toolbar.getMenu() here, because we need the ActionMenuItemView. ATEActionMenuItemView is overriding the item icon tint color.
+                if (v instanceof ActionMenuView) {
+                    for (int j = 0; j < ((ActionMenuView) v).getChildCount(); j++) {
+                        final View innerView = ((ActionMenuView) v).getChildAt(j);
+                        if (innerView instanceof ActionMenuItemView) {
+                            int drawablesCount = ((ActionMenuItemView) innerView).getCompoundDrawables().length;
+                            for (int k = 0; k < drawablesCount; k++) {
+                                if (((ActionMenuItemView) innerView).getCompoundDrawables()[k] != null) {
+                                    ((ActionMenuItemView) innerView).getCompoundDrawables()[k].setColorFilter(colorFilter);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (menu == null)
+                menu = toolbar.getMenu();
+            if (menu != null && menu.size() > 0) {
+                for (int i = 0; i < menu.size(); i++) {
+                    final MenuItem item = menu.getItem(i);
+                    // We must iterate through the toolbar.getMenu() too, to keep the tint when resuming the paused activity.
+                    if (item.getIcon() != null) {
+                        item.setIcon(TintHelper.createTintedDrawable(item.getIcon(), color));
+                    }
+                    // Search view theming
+                    if (item.getActionView() != null && (item.getActionView() instanceof android.widget.SearchView || item.getActionView() instanceof android.support.v7.widget.SearchView)) {
+                        SearchViewTintUtil.setSearchViewContentColor(item.getActionView(), color);
+                    }
+                }
+            }
+        }
+
+        private static final class SearchViewTintUtil {
+            private static void tintImageView(Object target, Field field, final @ColorInt int color) throws Exception {
+                field.setAccessible(true);
+                final ImageView imageView = (ImageView) field.get(target);
+                if (imageView.getDrawable() != null)
+                    imageView.setImageDrawable(TintHelper.createTintedDrawable(imageView.getDrawable(), color));
+            }
+
+            public static void setSearchViewContentColor(View searchView, final @ColorInt int color) {
+                if (searchView == null) return;
+                final Class<?> cls = searchView.getClass();
+                try {
+                    final Field mSearchSrcTextViewField = cls.getDeclaredField("mSearchSrcTextView");
+                    mSearchSrcTextViewField.setAccessible(true);
+                    final EditText mSearchSrcTextView = (EditText) mSearchSrcTextViewField.get(searchView);
+                    mSearchSrcTextView.setTextColor(color);
+                    mSearchSrcTextView.setHintTextColor(ATEUtil.adjustAlpha(color, 0.5f));
+                    TintHelper.setCursorTint(mSearchSrcTextView, color);
+
+                    Field field = cls.getDeclaredField("mSearchButton");
+                    tintImageView(searchView, field, color);
+                    field = cls.getDeclaredField("mGoButton");
+                    tintImageView(searchView, field, color);
+                    field = cls.getDeclaredField("mCloseButton");
+                    tintImageView(searchView, field, color);
+                    field = cls.getDeclaredField("mVoiceButton");
+                    tintImageView(searchView, field, color);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
