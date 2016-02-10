@@ -412,16 +412,13 @@ public final class Config implements ConfigKeys, ConfigInterface {
     @StyleRes
     public static int activityTheme(@NonNull Context context, @Nullable String key) {
         final SharedPreferences prefs = prefs(context, key);
-        int value = prefs.getInt(KEY_ACTIVITY_THEME, 0);
-        if (value == 0) {
-            final String valueStr = prefs.getString(KEY_ACTIVITY_THEME, null);
-            String valueTypeStr = prefs.getString(KEY_ACTIVITY_THEME_DEFTYPE, null);
-            if (valueStr != null) {
-                if (valueTypeStr == null) valueTypeStr = "style";
-                value = context.getResources().getIdentifier(valueStr, valueTypeStr, context.getPackageName());
-            }
+        final String valueStr = prefs.getString(KEY_ACTIVITY_THEME, null);
+        String valueTypeStr = prefs.getString(KEY_ACTIVITY_THEME_DEFTYPE, null);
+        if (valueStr != null) {
+            if (valueTypeStr == null) valueTypeStr = "style";
+            return context.getResources().getIdentifier(valueStr, valueTypeStr, context.getPackageName());
         }
-        return value;
+        return 0;
     }
 
     @CheckResult
