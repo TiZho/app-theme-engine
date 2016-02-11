@@ -1,6 +1,4 @@
-### This doc will soon be re-written for ATE 1.0!
-
-# App Theme Engine (BETA)
+# App Theme Engine
 
 App Theme Engine is a library that makes it easy for developers to implement a theme system in 
 their apps, similar to what's seen in [Cabinet](https://play.google.com/store/apps/details?id=com.afollestad.cabinet) 
@@ -29,37 +27,19 @@ Only use this library if you intend to give the user the ability to change the c
 1. [Gradle Dependency](https://github.com/afollestad/app-theme-engine#gradle-dependency)
     1. [Repository](https://github.com/afollestad/app-theme-engine#repository)
     2. [Dependency](https://github.com/afollestad/app-theme-engine#dependency)
-2. [Config](https://github.com/afollestad/app-theme-engine#config)
-    1. [Modifiers](https://github.com/afollestad/app-theme-engine#modifiers)
-    2. [Keys](https://github.com/afollestad/app-theme-engine#keys)
+2. [How It Works](https://github.com/afollestad/app-theme-engine#how-it-works)
+3. [Installation](https://github.com/afollestad/app-theme-engine#installation)
+4. [Configuration](https://github.com/afollestad/app-theme-engine#configuration)
+    1. [The config Method](https://github.com/afollestad/app-theme-engine#the-config-method)
+    2. [Configuration Keys](https://github.com/afollestad/app-theme-engine#configuration-keys)
     3. [Default Configuration](https://github.com/afollestad/app-theme-engine#default-configuration)
     4. [Value Retrieval](https://github.com/afollestad/app-theme-engine#value-retrieval)
-    5. [Customizers](https://github.com/afollestad/app-theme-engine#customizers)
-    6. [Marking as Changed](https://github.com/afollestad/app-theme-engine#marking-as-changed)
-3. [Basics of Applying](https://github.com/afollestad/app-theme-engine#basics-of-applying)
-    1. [ATEActivity](https://github.com/afollestad/app-theme-engine#ateactivity)
-    2. [Custom Activities](https://github.com/afollestad/app-theme-engine#custom-activities)
-    3. [Fragments](https://github.com/afollestad/app-theme-engine#fragments)
-    3. [Toolbars, Menus, Overflows, and SearchViews](https://github.com/afollestad/app-theme-engine#toolbars-menus-overflows-and-searchviews)
-    4. [Individual Views and Lists](https://github.com/afollestad/app-theme-engine#individual-views-and-lists)
-    5. [DrawerLayout and NavigationViews](https://github.com/afollestad/app-theme-engine#drawerlayout-and-navigationviews)
-    6. [Task Description (Recents)](https://github.com/afollestad/app-theme-engine#task-description-recents)
-    7. [TabLayouts](https://github.com/afollestad/app-theme-engine#tablayouts)
-4. [Tags](https://github.com/afollestad/app-theme-engine#tags)
-    1. [Ignore](https://github.com/afollestad/app-theme-engine#ignore)
-    2. [Background Colors](https://github.com/afollestad/app-theme-engine#background-colors)
-    3. [Tint Colors](https://github.com/afollestad/app-theme-engine#tint-colors)
-    4. [Text Colors](https://github.com/afollestad/app-theme-engine#text-colors)
-    5. [Text Colors (Dependent)](https://github.com/afollestad/app-theme-engine#text-colors-dependent)
-    6. [Text Link Colors](https://github.com/afollestad/app-theme-engine#text-link-colors)
-    7. [Text Shadow Colors](https://github.com/afollestad/app-theme-engine#text-shadow-colors)
-    8. [Text Size](https://github.com/afollestad/app-theme-engine#text-size)
-    9. [Text Fonts](https://github.com/afollestad/app-theme-engine#text-fonts)
-    10. [TabLayouts - Continued](https://github.com/afollestad/app-theme-engine#tablayouts-continued)
-    11. [Edge Glows](https://github.com/afollestad/app-theme-engine#edge-glows)
-5. [Pre-made Views](https://github.com/afollestad/app-theme-engine#pre-made-views)
-6. [Material Dialogs Integration](https://github.com/afollestad/app-theme-engine#material-dialogs-integration)
-7. [Preference UI](https://github.com/afollestad/app-theme-engine#preference-ui)
+    5. [Marking as Changed](https://github.com/afollestad/app-theme-engine#marking-as-changed)
+5. [Color Tags](https://github.com/afollestad/app-theme-engine#color-tags)
+6. [Other Tags][Color Tags](https://github.com/afollestad/app-theme-engine#other-tags)
+7. [Customizers](https://github.com/afollestad/app-theme-engine#customizers)
+8. [Material Dialogs Integration](https://github.com/afollestad/app-theme-engine#material-dialogs-integration)
+9. [Preference UI](https://github.com/afollestad/app-theme-engine#preference-ui)
 
 ---
 
@@ -89,7 +69,7 @@ Add this to your module's `build.gradle` file (make sure the version matches the
 ```gradle
 dependencies {
 	...
-	compile('com.github.afollestad:app-theme-engine:0.7.7@aar') {
+	compile('com.github.afollestad:app-theme-engine:1.0.0@aar') {
 		transitive = true
 	}
 }
@@ -97,17 +77,114 @@ dependencies {
 
 ---
 
-# Config
+# How It Works
 
-By default, Android app themes are static. They cannot be changed dynamically after an APK is built. This 
-library allows you to dynamically change theme colors at runtime.
+ATE installs a `LayoutInflaterFactory` into your app. This factory acts as an interceptor during
+layout inflation, and replaces stock Android views with custom views that are able to theme themselves.
 
-All configuration options are persisted using SharedPreferences, meaning once you set them, you don't have 
-to set them again unless you want the value to be changed from what it was previously.
+ATE also includes a tag engine which allows you to customize the theming of views at a detailed and 
+dynamic level.
 
-#### Modifiers
+---
 
-Here are a few configuration methods that can be used:
+# Installation
+
+#### ATEActivity
+
+The first option is to have all of your Activities extend `ATEActivity`. This will do all the heavy 
+lifting for you.
+
+```java
+public class MyActivity extends ATEActivity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.my_layout);
+    }
+    
+    // This method is optional, you can change Config keys between
+    // different Activities. This will become useful later.
+    @Nullable
+    @Override
+    public String getATEKey() {
+        return null;
+    }
+}
+```
+
+#### Custom Activities
+
+If you don't want to use `ATEActivity`, you can plug ATE into your already existing 
+Activities with a bit of extra code.
+
+```java
+public class MyActivity extends AppCompatActivity {
+
+    private long updateTime = -1;
+    
+    // Again, this method will become useful later
+    @Nullable
+    public String getATEKey() {
+        return null;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // Applies initial theming, required before super.onCreate()
+        ATE.preApply(this, getATEKey());
+        super.onCreate(savedInstanceState);
+        // Sets the startup time to check for value changes later
+        updateTime = System.currentTimeMillis();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Performs post-inflation theming
+        ATE.postApply(this, getATEKey());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Checks if values have changed since the Activity was previously paused.
+        // Causes Activity recreation if necessary.
+        ATE.invalidateActivity(this, updateTime, getATEKey());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Cleans up resources if the Activity is finishing
+        if (isFinishing())
+            ATE.cleanup();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Themes the overflow icon in the toolbar, along with
+        // the collapse icon for widgets such as SearchViews.
+        ATE.themeOverflow(this, getATEKey());
+        return super.onCreateOptionsMenu(menu);
+    }
+}
+```
+
+---
+
+# Configuration
+
+Without any configuration setup by you, default theme values will be used throughout your app. 
+Default theme values would mean attributes used by AppCompat, such as `colorPrimary` and `colorAccent`. 
+
+The major benefit of using ATE is the fact that you can dynamically change theme colors in your 
+apps, rather than relying on static themes in `styles.xml` for everything.
+
+#### The config Method
+
+The `ATE.config(Context, String)` method allows you to setup configuration. ALl of the methods 
+chained below are optional, comments explain what they do:
 
 ```java
 // Context and optional Config key as parameters to config()
@@ -159,75 +236,316 @@ ATE.config(this, null)
     .navigationViewNormalText(color)
     // Background of selected NavigationView item. Defaults to Material Design guideline color.
     .navigationViewSelectedBg(color)
+    // Sets the text size in sp for bodies, can use textSizePxForMode or textSizeResForMode too.
+    .textSizeSpForMode(16, Config.TEXTSIZE_BODY)
     // application target as parameter, accepts different parameter types/counts
     .apply(this);
 ```
 
-There's also color resource and color attribute variations of the color modifiers. For an example: 
-rather than using `primaryColor(int)`, you could use `primaryColorRes(int)` or `primaryColorAttr(int)` 
-in order to pass a value in the format `R.color.resourceValue` or `R.attr.attributeValue`.
+Methods which are used to set color have a literal variation, resource variation, and attribute variation. 
+For an example, you could use `navigationBarColor(int)` to set the nav bar color to a literal color, you 
+could use `navigationBarColorRes(int)` to set a color from a color resource (e.g. `R.color.primary_color`), 
+or you could use `navigationBarColorAttr(int)` to set a color from a theme attribute (e.g. `R.attr.colorPrimary`).
 
-#### Keys
+It's possible there are configuration methods I forgot to include in the code block above. So feel free 
+to experiment.
 
-The second parameter of `ATE.config(Context, String)` was null above, because it's optional. You can instead 
-pass a String of any value as a key. This will allow you to keep separate configurations, which can be applied 
-to different Activities, Fragments, Views, at will. Passing null specifies to use the default. You could have 
-two Activities which store their own separate theme values independently, or you could have two configurations 
-for a light and dark theme.
+#### Configuration Keys
 
-The [Basics of Applying](https://github.com/afollestad/app-theme-engine#basics-of-applying) section will go over this a bit more.
+The second parameter in the `ATE.config(Context, String)` is an optional configuration key. You can pass 
+different keys to setup different configurations. 
+
+For an example, you could do this:
+
+```java
+ATE.config(this, "light_theme")
+    .primaryColor(R.color.primaryLightTheme)
+    .commit();
+    
+ATE.config(this, "dark_theme")
+    .primaryColor(R.color.primaryDarkTheme)
+    .commit();
+```
+
+From an Activity, you could use these configuration keys:
+
+```java
+public class MyActivity extends ATEActivity {
+
+    @Nullable
+    @Override
+    public String getATEKey() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useDark = prefs.getBoolean("dark_theme", false);
+        return useDark ? "dark_theme" : "light_theme";
+    }
+}
+```
+
+You could dynamically change the primary theme color in this Activity by changing the value
+of `dark_theme` in your `SharedPreferences`. This is how dynamic theming starts.
 
 #### Default Configuration
 
-If you want to setup a default configuration the first time your app is run, you can use code like this:
+Preferably, you'd want to setup your default configuration in your default `styles.xml` theme for your 
+Activities. However, there are probably some theme values you'd want to set defaults for directly from 
+code. It can be done like this:
 
 ```java
+// The default configuration (no config key) has NOT been set before
 if (!ATE.config(this, null).isConfigured()) {
     // Setup default options for the default (null) key
 }
 ```
 
-Again, the second parameter of `config(Context, String)` is an optional key.
-
----
-
-You can also pass a number to `isConfigured(int)` which allows you to perform configuration upgrades/overrides.
-
-```java
-if (!ATE.config(this, null).isConfigured(1)) {
-    // Setup default options for the default (null) key, version 1
-}
-
-// LATER, you want to override previously set defaults for existing users...
-
-if (!ATE.config(this, null).isConfigured(2)) {
-    // Setup default options for the default (null) key, version 2
-}
-```
+There is a variation of `isConfigured()` that takes an integer as a parameter. This can be 
+used to make configuration upgrades. An example of where this would be useful is if you had to change 
+something which required current users to have new defaults when they update your app. Increasing
+the number passed to `isConfigured()` will return false if that number hadn't been passed and setup before.
 
 #### Value Retrieval
 
-Using the `Config` class, you can retrieve your theme values (if you need to for any reason). For an example:
+Using the `Config` class, you can retrieve your set theme values from code.
 
 ```java
 int primaryColor = Config.primaryColor(this, null);
 ```
 
-And yet again, the second parameter is an optional key.
+The second parameter is an optional configuration key as discussed above.
 
-#### Customizers
+#### Marking as Changed
 
-Customizers are interfaces your Activities can implement to specify theme values without saving them 
-in your Configuration (if you don't want to use separate keys for different screens).
+There are some situations in which you'll want Activities to recreate themselves even though 
+a value within `Config` had not been changed. 
+
+A good example of this is the Sample app for this library. When you switch between the light or 
+dark theme, it saves a value to the app's preferences, but nothing in ATE's configuration is changed. 
+Activities are forced to recreate themselves so that they use a different ATE key during creation.
+
+You can mark configuration as changed to do this:
 
 ```java
-public class MyActivity extends AppCompatActivity 
-        implements ATEActivityThemeCustomizer, 
-                   ATEToolbarCustomizer, 
-                   ATEStatusBarCustomizer, 
-                   ATETaskDescriptionCustomizer, 
-                   ATENavigationBarCustomizer,
-                   ATECollapsingTbCustomizer {
+Config.markChanged(this, null);
+```
+
+You can also mark multiple configuration keys as changed:
+
+```java
+Config.markChanged(this, "light_theme", "dark_theme");
+```
+
+---
+
+# Color Tags
+
+ATE tags can be set to your views to customize theme colors at a 
+per-view level.
+
+You can have multiple tags set to a single view, separated by commas.
+
+```xml
+<TextView
+    android:layout_width="match_parent"
+    android_layout_height="wrap_content"
+    android:tag="text_color|primary_color" />
+```
+
+The structure of an ATE tag is like this:
+
+```xml
+category|color
+```
+
+### Color Options
+
+Categories will be discussed below, but you should first know what colors can be used along side them.
+
+1. `primary_color`
+2. `primary_color_dark`
+3. `accent_color`
+4. `primary_text`
+5. `primary_text_inverse`
+6. `secondary_text`
+7. `secondary_text_inverse`
+8. `parent_dependent` - checks the background colors of the view's parent, and uses a light or dark color in order to be visible.
+9. `primary_color_dependent` - uses a light or dark color based on the lightness of the primary theme color in order to be visible.
+10. `accent_color_dependent` - uses a light or dark color based on the lightness of the accent theme color in order to be visible.
+11. `window_bg_dependent` - uses a light or dark color based on the lightness of the window background color in order to be visible.
+
+#### Background Color
+
+The category for background colors is `background`. This can be used on all views.
+
+```xml
+background|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Text Color
+
+The category for text colors is `text_color`. It can be used on any instance of `TextView`, including `Button`'s.
+
+```xml
+text_color|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Text Hint Color
+
+The category for text hint colors is `text_color_hint`. It can be used on any instance of `TextView`, including `Button`'s.
+
+```xml
+text_color_hint|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Text Link Color
+
+The category for text link colors is `text_color_link`. It can be used on any instance of `TextView`, including `Button`'s.
+
+```xml
+text_color_link|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Text Shadow Color
+
+The category for text shadow colors is `text_color_shadow`. It can be used on any instance of `TextView`, including `Button`'s.
+
+```xml
+text_color_shadow|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Tint
+
+The category for tinting is `tint`. It can be used on widget views, such as: `CheckBox`, `RadioButton`, `ProgressBar`, 
+`SeekBar`, `EditText`, `ImageView`, `Switch`, `SwitchCompat`, `Spinner`. Tinting affects the color of view elements, such 
+as the underline of an `EditText` and its cursor. It can also change the color of icons in an `ImageView`.
+
+```xml
+tint|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Background Tint
+
+The category for background tinting is `tint_background`, it can be used on all views. Basically, it changes 
+the background color of a view without changing the background entirely.
+
+```xml
+tint_background|primary_color
+```
+
+#### Selector Tint
+
+The category for selector tinting is `tint_selector` **or** `tint_selector_lighter`. `tint_selector_lighter` 
+will make the view lighter when pressed, versus being darker when pressed. This tag can be used on any 
+view, preferably views that respond to touch. An example of how this could be used is to change the color of a
+pressable button.
+
+``xml
+tint_selector|primary_color
+
+// or
+
+tint_selector_lighter|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### TabLayouts
+
+The categories for `TabLayout` theming are `tab_text` and `tab_indicator`. `tab_text` changes the color of 
+tab titles, `tab_indicator` changes the color of the active tab underline (along with tab icons).
+
+```xml
+tab_text|primary_color
+
+// or
+
+tab_indicator|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+#### Edge Glow
+
+The category for edge glow tinting is `edge_glow`. It can be used on `ScrollView`, `ListView`, `NestedScrollView`, 
+`RecyclerView`, and `ViewPager` (along with subclasses of them). It changes the color of the overscroll animation 
+(e.g. what happens if you scroll to the end and attempt to keep scrolling).
+
+```xml
+edge_scroll|primary_color
+```
+
+More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
+
+---
+
+# Other Tags
+
+Tags which are not related to color are listed here. See an intro of what tags are in 
+[Color Tags](https://github.com/afollestad/app-theme-engine#color-tags).
+
+#### Fonts
+
+The category for font tags is `font`. It can be used on `TextView` or any subclass of it, including `Button`. 
+The value after the pipe for this category is the name of a font file in your project's `assets` folder. ATE 
+handles caching your fonts automatically: if you use the same font in multiple places, it only gets allocated once.
+
+```xml
+font|RobotoSlab_Bold.ttf
+```
+
+#### Text Size
+
+The category for text size is `text_size`. It can be used on `TextView` or any subclass of it, including `Button`. 
+
+```xml
+text_size|body
+```
+
+The options that can go after the pipe are:
+
+1. `caption` - defaults to 12sp
+2. `body` - defaults to 14sp
+3. `subheading` - defaults to 16sp
+4. `title` - defaults to 20sp
+5. `headline` - defaults to 24sp
+6. `display1` - defaults to 34sp
+7. `display2` - defaults to 45sp
+8. `display3`- defaults 56sp
+9. `display4` - defaults to 112sp
+
+The defaults above are taken from the Material Design guidelines. These 
+values can all be changed using an option in `ATE.config(Context, String)`.
+
+#### Ignore
+
+If you set a view's tag to `ate_ignore`, ATE will skip theming it (even with defaults).
+
+---
+
+# Customizers
+
+Customizers are interfaces your Activities can implement to specify theme values without saving them 
+in your Configuration.
+
+```java
+public class MyActivity extends AppCompatActivity implements 
+        ATEActivityThemeCustomizer, 
+        ATEToolbarCustomizer, 
+        ATEStatusBarCustomizer, 
+        ATETaskDescriptionCustomizer, 
+        ATENavigationBarCustomizer,
+        ATECollapsingTbCustomizer {
     
     @StyleRes
     @Override
@@ -300,561 +618,25 @@ public class MyActivity extends AppCompatActivity
 }
 ```
 
-You can override some or all, to fit your needs. But again, you don't *need* to use these if you use keys for 
-different configurations.
-
-#### Marking as Changed
-
-In the sample project, you can switch between a light and dark theme. The preference that says whether or 
-not the dark theme is active is not part of ATE. The sample project tells MainActivity that it
-needs to restart on return from the Settings Screen when the dark theme has been toggled.
-
-```java
-// Second parameter is an optional Config key
-Config.markChanged(this, null);
-```
-
-This method tells all already running Activities that the configuration has been changed since they were 
-first opened, without having to edit other configuration values.
-
-You can mark multiple configuration keys as changed:
-
-```java
-Config.markChanged(this, "light_theme", "dark_theme");
-```
-
----
-
-# Basics of Applying
-
-Once you have configurations set, you can apply the theme engine to Activities, Fragments, and even 
-individual views.
-
-#### ATEActivity
-
-As seen in the sample project, you can have all Activities in your app extends `ATEActivity`. This will do
-all the heavy lifting for you.
-
-```java
-public class MyActivity extends ATEActivity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_layout);
-    }
-}
-```
-
-If you were to leave the Activity, change theme values (e.g. in a Settings screen), and come back,
-the Activity would automatically recreate itself.
-
-You can also change theme values in real time within the Activity using the `ATE.apply()` or `Config#apply()` methods.
-
----
-
-The [Config](https://github.com/afollestad/app-theme-engine#config) section emphasized the fact that you can
-use keys to separate different theme configurations. `ATEActivity` has an optional override method called 
-`getATEKey()` which can be used to specify a configuration to use in individual activities.
-
-```java
-public class MyActivity extends ATEActivity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_layout);
-    }
-    
-    @Nullable
-    @Override
-    protected String getATEKey() {
-        return getClass().getName();
-    }
-}
-```
-
-The value returned here is used in many other areas too. For an example, there are two versions of almost every method. 
-One that accepts a config key, one that doesn't. `ATE.config(Context, String)` is a good example. If you were to use 
- `ATE.config(Context)` and pass the above `Activity` as the `Context`, it would automatically use the return value 
- of `getATEKey()` as the second parameter even though it wasn't directly specified.
-
-#### Custom Activities
-
-If you don't use `ATEActivity`, there's a few things you have to do:
-
-```java
-public class MyActivity extends AppCompatActivity {
-
-    private long updateTime = -1;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Apply theming to status bar, nav bar, and task description (recents).
-        // Second parameter is optional config key.
-        ATE.preApply(this, null);
-        super.onCreate(savedInstanceState);
-        
-        // Always call BEFORE apply()
-        setContentView(R.layout.my_layout);
-        
-        // Store the time the engine was initially applied, so the Activity can restart when coming back after changes
-        updateTime = System.currentTimeMillis();
-        
-        // Apply colors to other views in the Activity. Call after all initial view setup, including toolbars!
-        // Second parameter is optional config key.
-        ATE.apply(this, null);
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // If values were applied/committed (from Config) since the Activity was created, recreate it now
-        // Third parameter is optional config key.
-        if (ATE.didValuesChange(this, updateTime, null))
-            recreate();
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.my_menu, menu);
-        // Applies tinting to menu icons and overflow button if necessary (if toolbar background is light colored)
-        ATE.applyMenu(this, getATEKey(), menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        // Applies tinting to widgets (e.g. checkboxes) inside the overflow menu popup
-        ATE.applyOverflow(this, getATEKey());
-        return super.onMenuOpened(featureId, menu);
-    }
-}
-```
-
-#### Fragments
-
-You can also apply theming to views in a Fragment:
-
-```java
-public class MyFragment extends Fragment {
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Second parameter is optional config key.
-        ATE.apply(this, null);
-    }
-}
-```
-
-#### Toolbars, Menus, Overflows, and SearchViews
-
-ATE will automatically theme your toolbars or support action bars (if you use `ATEActivity` *or* follow
-the directions in [Custom Activities](https://github.com/afollestad/app-theme-engine#custom-activities)). 
-
-If `lightToolbarMode` is set to `Config.LIGHT_TOOLBAR_ON`, or if it's set to *auto* and the toolbar 
-background is light: the navigation icon (e.g. back or drawer), title, and menu icons will be tinted 
-black. Otherwise they will be white as normal. 
-
-ATE will automatically theme widgets in your overflow menu, along with expandable menu actions. 
-This includes checkboxes and radio buttons in your overflow sub-menus, and SearchViews expanded when 
-you tap a search icon. It will also correctly theme `CollapsingToolbarLayout`'s.
-
-#### Individual Views and Lists
-
-You theme individual views like this:
-
-```java
-ATE.apply(view, null);
-```
-
-The second parameter is an optional Config key.
-
----
-
-When working with lists, you have to apply the theme engine to each individual view in your adapter.
-
-For *RecyclerViews*:
-
-```java
-public static class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-
-    public MyAdapter() {
-    }
-
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View list = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item, parent, false);
-        return new MyViewHolder(list);
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        // Setup views
-    }
-
-    @Override
-    public int getItemCount() {
-        return 20;
-    }
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            // It's recommended you only apply the theme the first time the holder is created.
-            // Second parameter is optional key.
-            ATE.apply(itemView, null);
-        }
-    }
-}
-```
-
-For *ListViews*:
-
-```java
-public static class MyAdapter extends BaseAdapter {
-
-    @Override
-    public int getCount() {
-        return 20;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item, parent, false);
-            // Only apply the first time the view is created.
-            // Second parameter is optional key.
-            ATE.apply(convertView, null);
-        }
-        return convertView;
-    }
-}
-```
-
-#### DrawerLayout and NavigationViews
-
-ATE will automatically adapt when your Activity has a `DrawerLayout` at its root. When `coloredStatusBar()` 
-is set to true, the primary dark theme color will be applied to the `DrawerLayout` rather than directly to 
-the Window status bar. Thus, the status bar will be transparent when the drawer is open, and your theme
-color when it's closed. You don't have to manually do anything.
-
----
-
-If you use `NavigationView` from the Design Support Library, ATE will by default theme it. There are 
-NavigationView theming configuration methods discussed in the [Modifiers](https://github.com/afollestad/app-theme-engine#modifiers) 
-section. But the default values match the [Material Design Guidelines](https://www.google.com/design/spec/patterns/navigation-drawer.html).
-
-#### Task Description (Recents)
-
-You don't have to do anything extra for this. Your app's Android recents (multi-tasking) entry will 
-be themed to your primary color automatically.
-
-There is however an `ATETaskDescriptionCustomizer` that's discussed in the [Customizers](https://github.com/afollestad/app-theme-engine#customizers)
- section.
- 
- 
-#### TabLayouts
-
-ATE will automatically theme your `TabLayout`'s. By default, it will make the selected tab indicator
-and tab text white if your TabLayout background is dark. If the TabLayout background is light, it will 
-make the indicator and text black. 
-
-If you wrap your `TabLayout` with an `AppBarLayout` and set a background to the `AppBarLayout`, ATE 
-will base the default tab indicator/text colors on its background instead.
-
-However, there are tag values you can set to easily modify these colors. They are discussed in 
-[TabLayouts - Continued](https://github.com/afollestad/app-theme-engine#tablayouts-continued).
-
----
-
-# Tags
-
-If you haven't used tags before, they can be applied to views directly from your XML layouts:
-
-```xml
-<View
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:tag="tag-value-here" />
-```
-
-The theme engine allows you to apply theme colors to any view using tags. **You can even use multiple tags, separated by commas**:
-
-```xml
-<View
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:tag="tag-one,tag-two,tag-three" />
-```
-
-Here's a list of available tag values:
-
-#### Ignore
-
-If you want ATE to ignore a `View`, or more importantly a `ViewGroup`, you can set its tag to `ate_ignore`.
-
-The major advantage of using this on a `ViewGroup` is that ATE won't look through the view's children, thus 
-decreasing the amount of type it takes to apply.
-
----
-
-This only works if the tag value is just `ate_ignore`, nothing else. You can't use this in conjunction with other tags.
-
-#### Background Colors
-
-You can change the background of any type of view.
-
-1. `bg_primary_color` - sets the background to the primary color.
-2. `bg_primary_color_dark` - sets the background to the primary dark color.
-3. `bg_accent_color` - sets the background to the accent color.
-4. `bg_text_primary` - sets the background to the primary text color.
-5. `bg_text_primary_inverse` - sets the background to the inverse primary text color.
-6. `bg_text_secondary` - sets the background to the secondary text color.
-7. `bg_text_secondary_inverse` - sets the background to the inverse secondary text color.
-
-#### Tint Colors
-
-You can tint `CheckBox`'s, `RadioButton`'s, `ProgressBar`'s, `EditText`'s, `SeekBar`'s, and `ImageView`'s. 
-
-1. `tint_primary_color` - tints the view with the primary color.
-2. `tint_primary_color_dark` - tints the view with the primary dark color.
-3. `tint_accent_color` - tints the view with the accent color.
-4. `tint_text_primary` - tints the view with the primary text color.
-5. `tint_text_primary_inverse` - tints the view with the inverse primary text color.
-6. `tint_text_secondary` - tints the view with the secondary text color.
-7. `tint_text_secondary_inverse` - tints the view with the inverse secondary text color.
-
----
-
-Background tints work on any type of view:
-
-1. `bg_tint_primary_color` - tints the view background with the primary color.
-2. `bg_tint_primary_color_dark` - tints the view background with the primary dark color.
-3. `bg_tint_accent_color` - tints the view background with the accent color.
-4. `bg_tint_text_primary` - tints the view background with the primary text color.
-5. `bg_tint_text_primary_inverse` - tints the view background with the inverse primary text color.
-6. `bg_tint_text_secondary` - tints the view background with the secondary text color.
-7. `bg_tint_text_secondary_inverse` - tints the view background with the inverse secondary text color.
-
----
-
-You can even use background tint selectors:
-
-1. `bg_tint_primary_color_selector_lighter` - tints the view background with a primary color selector, which is lighter when pressed.
-2. `bg_tint_primary_color_dark_selector_lighter` - tints the view background with a primary dark color selector, which is lighter when pressed.
-3. `bg_tint_accent_color_selector_lighter` - tints the view background with a accent color selector, which is lighter when pressed.
-4. `bg_tint_text_primary_selector_lighter` - tints the view background with a primary text color selector, which is lighter when pressed.
-5. `bg_tint_text_secondary_selector_lighter` - tints the view background with a secondary text color selector, which is lighter when pressed.
-6. `bg_tint_primary_color_selector_darker` - tints the view background with a primary color selector, which is lighter when pressed.
-7. `bg_tint_primary_color_selector_darker` - tints the view background with a primary color selector, which is lighter when pressed.
-8. `bg_tint_primary_color_dark_selector_darker` - tints the view background with a primary dark color selector, which is lighter when pressed.
-9. `bg_tint_accent_color_selector_darker` - tints the view background with a accent color selector, which is lighter when pressed.
-10. `bg_tint_text_primary_selector_darker` - tints the view background with a primary text color selector, which is lighter when pressed.
-11. `bg_tint_text_primary_inverse_selector_darker` - tints the view background with a inverse primary text color selector, which is lighter when pressed.
-12. `bg_tint_text_secondary_selector_darker` - tints the view background with a secondary text color selector, which is lighter when pressed.
-13. `bg_tint_text_secondary_inverse_selector_darker` - tints the view background with a inverse secondary text color selector, which is lighter when pressed.
-
-#### Text Colors
-
-You can only change the text color of a view that extends `TextView`, which includes `Button`'s.
-
-1. `text_primary_color` - sets the text color to the primary color.
-2. `text_primary_color_dark` - sets the text color to the primary dark color.
-3. `text_accent_color` - sets the text color to the accent color.
-4. `text_primary` - sets the text color to the primary text color.
-5. `text_primary_inverse` - sets the text color to the inverse primary text color.
-6. `text_secondary` - sets the text color to the secondary text color.
-7. `text_secondary_inverse` - sets the text color to the inverse secondary text color.
-
-#### Text Colors (Dependent)
-
-You can only change the text color of a view that extends `TextView`, which includes `Button`'s.
-
-1. `text_primary_color_dependent` - if the primary color is light, the text will be black. White if it's dark.
-2. `text_primary_color_dark_dependent` - if the primary dark color is light, the text will be black. White if it's dark.
-3. `text_accent_color_dependent` - if the accent color is light, the text will be black. White if it's dark.
-4. `text_primary_dependent` - if the primary text color is light, the text will be black. White if it's dark.
-5. `text_primary_inverse_dependent` - if the inverse primary text color is light, the text will be black. White if it's dark.
-6. `text_secondary_dependent` - if the secondary text color is light, the text will be black. White if it's dark.
-7. `text_secondary_inverse_dependent` - if the inverse secondary text color is light, the text will be black. White if it's dark.
-9. `window_background_dependent` - if the window background color is light, the text will be black. White if it's dark.
-
-#### Text Link Colors
-
-These should only really be needed on `TextView'`s and subclasses of `TextView`, it changes the color of links when TextViews are linkable.
-
-1. `text_link_primary_color` - sets the link text color to the primary color.
-2. `text_link_primary_color_dark` - sets the link text color to the primary dark color.
-3. `text_link_accent_color` - sets the link text color to the accent color.
-4. `text_link_primary` - sets the link text color to the primary text color.
-5. `text_link_primary_inverse` - sets the link text color to the inverse primary text color.
-6. `text_link_secondary` - sets the link text color to the secondary text color.
-7. `text_link_secondary_inverse` - sets the link text color to the inverse secondary text color.
-
-#### Text Shadow Colors
-
-These can be used on `TextView'`s and subclasses of `TextView`, it changes the `shadowColor` value.
-
-1. `text_shadow_primary_color` - sets the link text color to the primary color.
-2. `text_shadow_primary_color_dark` - sets the link text color to the primary dark color.
-3. `text_shadow_accent_color` - sets the link text color to the accent color.
-4. `text_shadow_primary` - sets the link text color to the primary text color.
-5. `text_shadow_primary_inverse` - sets the link text color to the inverse primary text color.
-6. `text_shadow_secondary` - sets the link text color to the secondary text color.
-7. `text_shadow_secondary_inverse` - sets the link text color to the inverse secondary text color.
-
-#### Text Size
-
-These can be used on `TextView'`s and subclasses of `TextView`. The default values are taken
-from the Material Design Guidelines, [as seen here](https://www.google.com/design/spec/style/typography.html#typography-styles).
-
-1. `textsize_display4` -  applies the text size for large displays. Defaults to *112sp*.
-2. `textsize_display3` - applies the text size for large displays. Defaults to *56sp*.
-3. `textsize_display2` - applies the text size for large displays. Defaults to *45sp*.
-4. `textsize_display1` - applies the text size for large displays. Defaults to *34sp*.
-5. `textsize_headline` - applies the text size for headlines/headers. Defaults to *24sp*.
-6. `textsize_title` - applies the text size for titles. Defaults to *20sp*.
-7. `textsize_subheading` - applies the text size for subheadings. Defaults to *16sp*.
-8. `textsize_body` - applies the text size for bodies. Defaults to *14sp*.
-9. `textsize_caption` - applies the text size for captions. Defaults to *12sp*.  
-
-All of these values can be changed, as seen in the [Modifiers](https://github.com/afollestad/app-theme-engine#modifiers) 
-section.
-
-#### Text Fonts
-
-This can be used on `TextView'`s and subclasses of `TextView`, it changes the Typeface (font). 
-ATE will automatically cache your Typefaces, so you don't have to worry about duplicate allocations.
-
-First, you need to copy your font files (e.g. TTF files) into your app's `/assets` folder. Let's say you 
-had a file called `Roboto.ttf`. You can reference it like this from any `TextView` instance:
-
-```xml
-<Button
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:tag="font_Roboto.ttf" />
-```
-
-The tag is just `font_` plus the name of your file.
-
-#### TabLayouts - Continued
-
-There are tag values to modify the color of TabLayout tab text:
-
-1. `tab_text_primary_color` - uses the primary color for for the tab text color.
-2. `tab_text_primary_color_dark` - uses the primary dark color for for the tab text color.
-3. `tab_text_accent_color` - uses the accent color for for the tab text color.
-4. `tab_text_primary` - uses the primary text color for for the tab text color.
-5. `tab_text_primary_inverse` - uses the inverse primary text color for for the tab text color.
-6. `tab_text_secondary` - uses the secondary text color for for the tab text color.
-7. `tab_text_secondary_inverse` - uses the inverse secondary color for for the tab text color.
-
-**Note** that the selected tab text will be fully opaque; non-selected tabs will have 25% transparency in 
-their text color.
-
----
-
-1. `tab_indicator_primary_color` - uses the primary color for for the selected tab indicator color.
-2. `tab_indicator_primary_color_dark` - uses the primary dark color for for the selected tab indicator color.
-3. `tab_indicator_accent_color` - uses the accent color for for the selected tab indicator color.
-4. `tab_indicator_text_primary` - uses the primary text color for for the selected tab indicator color.
-5. `tab_indicator_text_primary_inverse` - uses the inverse primary text color for for the selected tab indicator color.
-6. `tab_indicator_text_secondary` - uses the secondary text color for for the selected tab indicator color.
-7. `tab_indicator_text_secondary_inverse` - uses the inverse secondary text color for for the selected tab indicator color.
-
-**Note** that the indicator color is used for the color of tab icons, if they are used.
-
-#### Edge Glows
-
-By default, the edge glow (overscroll animation) of scrollable views are tinted to your accent color. 
-You can customize the edge glow color of views with tags:
-
-1. `edge_glow_primary_color` - sets the edge glow color to the primary color.
-2. `edge_glow_primary_color_dark` - sets the edge glow color to the primary dark color.
-3. `edge_glow_accent_color` - sets the edge glow color to the accent color.
-4. `edge_glow_text_primary` - sets the edge glow color to the primary text color.
-5. `edge_glow_text_primary_inverse` - sets the edge glow color to the inverse primary text color.
-6. `edge_glow_text_secondary` - sets the edge glow color to the secondary text color.
-7. `edge_glow_text_secondary_inverse` - sets the edge glow color to the inverse secondary text color.
-
----
-
-Supported scrollable views include:
-
-1. `ScrollView`
-2. `NestedScrollView`
-3. `ListView`
-4. `RecyclerView`
-5. `ViewPager`
-
----
-
-# Pre-made Views
-
-Seven views come stock with this library:
-
-1. `ATECheckBox` - tints itself to the accent color.
-2. `ATERadioButton` - tints itself to the accent color.
-3. `ATEEditText` - tints itself to the accent color
-4. `ATEProgressBar` - tints itself to the accent color.
-5. `ATESeekBar` - tints itself to the accent color.
-6. `ATEPrimaryTextView` - sets its text color to the primary text color.
-7. `ATESecondaryTextView` - sets its text color to the secondary text color.
-
-All that they really do is set their own tag to one of the tag values in the previous section,
-and then apply theming to themselves using the individual view `apply()` method.
-
----
-
-If you use Config keys in your app, you may want to apply theme to these pre-made views:
-
-```xml
-<com.afollestad.appthemeengine.ATECheckBox
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:ateKey_checkBox="your-config-key-here" />
-```
-
-All of the different views have a different suffix to `app:ateKey_`, since using the same attribute 
-name for all of them would result in duplicate errors.
-
-You can even use theme attributes in your Activity themes and reference them for this value (which is 
-done in the sample project since different keys are used for a light and dark theme).
-
 ---
 
 # Material Dialogs Integration
 
-If you want your primary/secondary text color and accent color to be applied to dialogs created using
-my [Material Dialogs](https://github.com/afollestad/material-dialogs) library, it only takes one config option:
+Since [Material Dialogs](https://github.com/afollestad/material-dialogs) is one of my libraries, I decided 
+ it would be a good idea to have some sort of integration with ATE. 
 
-```java
-ATE.config(this, null)
-    .usingMaterialDialogs(true)
-    .commit();
-```
+Luckily, nothing has to be done by you for it to work. Dialogs created with Material Dialogs will automatically
+be themed using your ATE configurations.
 
-You need to have Material Dialogs added as a dependency in your app, too.
+You obviously need to have Material Dialogs added as a dependency in your app, in order for it to work.
 
 ---
 
 # Preference UI
+
+**Important note:** you need to have [Material Dialogs](https://github.com/afollestad/material-dialogs) 
+added as a dependency to your apps in order for these classes to work. Material Dialogs is a provided dependency 
+in ATE, meaning it will not use it if depending apps don't.
 
 As seen in the sample project, ATE includes a set of pre-made Preference classes that handle theming 
 their own UI in your settings screen. They also use [Material Dialogs](https://github.com/afollestad/material-dialogs), 
@@ -874,7 +656,7 @@ themed to the secondary text color. The actual dialogs are themed using the logi
 
 ---
 
-Like pre-made views, you can specify config keys through your XML. For an example, you can use a 
+You can specify config keys through your XML. For an example, you can use a 
 theme attribute set from your Activity theme, which specifies a string (see the sample project):
 
 ```xml

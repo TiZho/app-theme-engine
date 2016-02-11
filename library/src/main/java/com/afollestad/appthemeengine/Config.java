@@ -338,8 +338,8 @@ public final class Config implements ConfigKeys, ConfigInterface {
     }
 
     @Override
-    public Config textSizeSpForMode(@IntRange(from = 1, to = Integer.MAX_VALUE) int dpValue, @TextSizeMode String mode) {
-        final int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, dpValue, mContext.getResources().getDisplayMetrics());
+    public Config textSizeSpForMode(@IntRange(from = 1, to = Integer.MAX_VALUE) int spValue, @TextSizeMode String mode) {
+        final int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, mContext.getResources().getDisplayMetrics());
         return textSizePxForMode(px, mode);
     }
 

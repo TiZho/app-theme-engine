@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -63,7 +64,7 @@ public final class ATE extends ATEBase {
     }
 
     public static void cleanup() {
-        if(mPostInflationApply != null) {
+        if (mPostInflationApply != null) {
             mPostInflationApply.clear();
             mPostInflationApply = null;
         }
@@ -74,8 +75,23 @@ public final class ATE extends ATEBase {
     }
 
     @SuppressLint("CommitPrefEdits")
-    public static boolean didValuesChange(@NonNull Context context, long updateTime, @Nullable String key) {
+    private static boolean didValuesChange(@NonNull Context context, long updateTime, @Nullable String key) {
         return ATE.config(context, key).isConfigured() && Config.prefs(context, key).getLong(Config.VALUES_CHANGED, -1) > updateTime;
+    }
+
+    public static boolean invalidateActivity(final @NonNull Activity activity, long updateTime, @Nullable String ateKey) {
+        if (ATE.didValuesChange(activity, updateTime, ateKey)) {
+            // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
+            // makes sure recreate() is called right after and not in onResume()
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    activity.recreate();
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     public static void preApply(@NonNull Activity activity, @Nullable String key) {

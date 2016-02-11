@@ -26,7 +26,7 @@ import java.util.Locale;
  */
 public final class ATEDefaultTags {
 
-    // TODO toolbars should use default tags instead of forcing toolbarCOlor()?
+    // TODO toolbars should use default tags instead of forcing toolbarColor()?
 
     public static void process(View view) {
         final HashMap<String, String> mDefaults = get(view);
