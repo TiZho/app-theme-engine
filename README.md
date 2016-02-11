@@ -45,7 +45,7 @@ Only use this library if you intend to give the user the ability to change the c
     7. [Tint Color](https://github.com/afollestad/app-theme-engine#tint-color)
     8. [Background Tint Color](https://github.com/afollestad/app-theme-engine#background-tint-color)
     9. [Selector Tint Color](https://github.com/afollestad/app-theme-engine#selector-tint-color)
-    2. [TabLayouts](https://github.com/afollestad/app-theme-engine#tablayouts)
+    2. [TabLayouts](https://github.com/afollestad/app-theadme-engine#tablayouts)
     2. [Edge Glow Color](https://github.com/afollestad/app-theme-engine#edge-glow-color)
 6. [Other Tags](https://github.com/afollestad/app-theme-engine#other-tags)
     1. [Fonts](https://github.com/afollestad/app-theme-engine#fonts)
