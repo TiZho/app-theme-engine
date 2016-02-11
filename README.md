@@ -36,7 +36,21 @@ Only use this library if you intend to give the user the ability to change the c
     4. [Value Retrieval](https://github.com/afollestad/app-theme-engine#value-retrieval)
     5. [Marking as Changed](https://github.com/afollestad/app-theme-engine#marking-as-changed)
 5. [Color Tags](https://github.com/afollestad/app-theme-engine#color-tags)
-6. [Other Tags][Color Tags](https://github.com/afollestad/app-theme-engine#other-tags)
+    1. [Color Options](https://github.com/afollestad/app-theme-engine#color-options)
+    2. [Background Color](https://github.com/afollestad/app-theme-engine#background-color)
+    3. [Text Color](https://github.com/afollestad/app-theme-engine#text-color)
+    4. [Text Hint Color](https://github.com/afollestad/app-theme-engine#text-hint-color)
+    5. [Text Link Color](https://github.com/afollestad/app-theme-engine#text-link-color)
+    6. [Text Shadow Color](https://github.com/afollestad/app-theme-engine#text-shadow-color)
+    7. [Tint Color](https://github.com/afollestad/app-theme-engine#tint-color)
+    8. [Background Tint Color](https://github.com/afollestad/app-theme-engine#background-tint-color)
+    9. [Selector Tint Color](https://github.com/afollestad/app-theme-engine#selector-tint-color)
+    2. [TabLayouts](https://github.com/afollestad/app-theme-engine#tablayouts)
+    2. [Edge Glow Color](https://github.com/afollestad/app-theme-engine#edge-glow-color)
+6. [Other Tags](https://github.com/afollestad/app-theme-engine#other-tags)
+    1. [Fonts](https://github.com/afollestad/app-theme-engine#fonts)
+    2. [Text Size](https://github.com/afollestad/app-theme-engine#text-size)
+    2. [Ignore](https://github.com/afollestad/app-theme-engine#ignore)
 7. [Customizers](https://github.com/afollestad/app-theme-engine#customizers)
 8. [Material Dialogs Integration](https://github.com/afollestad/app-theme-engine#material-dialogs-integration)
 9. [Preference UI](https://github.com/afollestad/app-theme-engine#preference-ui)
@@ -422,7 +436,7 @@ text_color_shadow|primary_color
 
 More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
 
-#### Tint
+#### Tint Color
 
 The category for tinting is `tint`. It can be used on widget views, such as: `CheckBox`, `RadioButton`, `ProgressBar`, 
 `SeekBar`, `EditText`, `ImageView`, `Switch`, `SwitchCompat`, `Spinner`. Tinting affects the color of view elements, such 
@@ -434,7 +448,7 @@ tint|primary_color
 
 More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
 
-#### Background Tint
+#### Background Tint Color
 
 The category for background tinting is `tint_background`, it can be used on all views. Basically, it changes 
 the background color of a view without changing the background entirely.
@@ -443,7 +457,7 @@ the background color of a view without changing the background entirely.
 tint_background|primary_color
 ```
 
-#### Selector Tint
+#### Selector Tint Color
 
 The category for selector tinting is `tint_selector` **or** `tint_selector_lighter`. `tint_selector_lighter` 
 will make the view lighter when pressed, versus being darker when pressed. This tag can be used on any 
@@ -475,7 +489,7 @@ tab_indicator|primary_color
 
 More color options can be seen in [Colors Options](https://github.com/afollestad/app-theme-engine#colors-options).
 
-#### Edge Glow
+#### Edge Glow Color
 
 The category for edge glow tinting is `edge_glow`. It can be used on `ScrollView`, `ListView`, `NestedScrollView`, 
 `RecyclerView`, and `ViewPager` (along with subclasses of them). It changes the color of the overscroll animation 
