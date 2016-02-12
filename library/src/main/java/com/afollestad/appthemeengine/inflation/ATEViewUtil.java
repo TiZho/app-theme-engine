@@ -18,7 +18,9 @@ class ATEViewUtil {
         String key = null;
         if (keyContext != null)
             key = keyContext.getATEKey();
-        ATE.themeView(context, view, key);
+        // Process views just once (during inflation)
+        if (view.isLayoutRequested())
+            ATE.themeView(context, view, key);
         return key;
     }
 
