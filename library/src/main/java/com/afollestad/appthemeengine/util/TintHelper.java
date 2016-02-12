@@ -14,7 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatEditText;
+import android.support.v4.view.TintableBackgroundView;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.Button;
@@ -259,8 +260,8 @@ public final class TintHelper {
                 ContextCompat.getColor(editText.getContext(), useDarker ? R.color.ate_control_normal_dark : R.color.ate_control_normal_light),
                 color
         });
-        if (editText instanceof AppCompatEditText) {
-            ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
+        if (editText instanceof TintableBackgroundView) {
+            ViewCompat.setBackgroundTintList(editText, editTextColorStateList);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             editText.setBackgroundTintList(editTextColorStateList);
         }
