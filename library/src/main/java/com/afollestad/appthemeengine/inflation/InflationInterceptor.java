@@ -89,7 +89,8 @@ public final class InflationInterceptor implements LayoutInflaterFactory {
                 attrsThemeField.setAccessible(true);
                 ATTRS_THEME = (int[]) attrsThemeField.get(null);
             } catch (Throwable t) {
-                throw new RuntimeException("Failed to get the value of static field ATTRS_THEME.", t);
+                t.printStackTrace();
+                Log.d("InflationInterceptor", "Failed to get the value of static field ATTRS_THEME: " + t.getMessage());
             }
         }
         mOnCreateViewMethod.setAccessible(true);
@@ -228,12 +229,14 @@ public final class InflationInterceptor implements LayoutInflaterFactory {
                         viewContext = mLi.getContext();
                     }
                     // Apply a theme wrapper, if requested.
-                    final TypedArray ta = viewContext.obtainStyledAttributes(attrs, ATTRS_THEME);
-                    final int themeResId = ta.getResourceId(0, 0);
-                    if (themeResId != 0) {
-                        viewContext = new ContextThemeWrapper(viewContext, themeResId);
+                    if (ATTRS_THEME != null) {
+                        final TypedArray ta = viewContext.obtainStyledAttributes(attrs, ATTRS_THEME);
+                        final int themeResId = ta.getResourceId(0, 0);
+                        if (themeResId != 0) {
+                            viewContext = new ContextThemeWrapper(viewContext, themeResId);
+                        }
+                        ta.recycle();
                     }
-                    ta.recycle();
 
                     Object[] mConstructorArgs;
                     try {
