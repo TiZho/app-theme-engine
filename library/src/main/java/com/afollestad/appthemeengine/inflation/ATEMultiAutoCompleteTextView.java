@@ -2,7 +2,7 @@ package com.afollestad.appthemeengine.inflation;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 
 import com.afollestad.appthemeengine.ATE;
@@ -12,19 +12,19 @@ import com.afollestad.appthemeengine.tagprocessors.ATEDefaultTags;
 /**
  * @author Aidan Follestad (afollestad)
  */
-class ATEEditText extends AppCompatEditText implements ViewInterface, PostInflationApplier {
+public class ATEMultiAutoCompleteTextView extends AppCompatAutoCompleteTextView implements ViewInterface, PostInflationApplier {
 
-    public ATEEditText(Context context) {
+    public ATEMultiAutoCompleteTextView(Context context) {
         super(context);
         init(context, null);
     }
 
-    public ATEEditText(Context context, AttributeSet attrs) {
+    public ATEMultiAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, null);
     }
 
-    public ATEEditText(Context context, AttributeSet attrs, @Nullable ATEActivity keyContext, boolean waitForInflate) {
+    public ATEMultiAutoCompleteTextView(Context context, AttributeSet attrs, @Nullable ATEActivity keyContext, boolean waitForInflate) {
         super(context, attrs);
         mWaitForInflate = waitForInflate;
         init(context, keyContext);

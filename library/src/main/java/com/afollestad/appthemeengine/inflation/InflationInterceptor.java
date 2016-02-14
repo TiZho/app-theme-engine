@@ -121,9 +121,19 @@ public final class InflationInterceptor implements LayoutInflaterFactory {
                 case "TextView":
                     view = new ATETextView(context, attrs, mKeyContext);
                     break;
-                case "android.support.v7.widget.AppCompatEdiText":
+                case "android.support.v7.widget.AppCompatEditText":
                 case "EditText":
                     view = new ATEEditText(context, attrs, mKeyContext,
+                            parent != null && parent instanceof TextInputLayout);
+                    break;
+                case "android.support.v7.widget.AppCompatAutoCompleteTextView":
+                case "AutoCompleteTextView":
+                    view = new ATEAutoCompleteTextView(context, attrs, mKeyContext,
+                            parent != null && parent instanceof TextInputLayout);
+                    break;
+                case "android.support.v7.widget.AppCompatMultiAutoCompleteTextView":
+                case "MultiAutoCompleteTextView":
+                    view = new ATEMultiAutoCompleteTextView(context, attrs, mKeyContext,
                             parent != null && parent instanceof TextInputLayout);
                     break;
                 case "android.support.v7.widget.AppCompatCheckBox":
