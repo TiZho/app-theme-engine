@@ -257,6 +257,7 @@ public final class ATE extends ATEBase {
     @Nullable
     private static Toolbar getPostInflationToolbar() {
         synchronized (IGNORE_TAG) {
+            if (mPostInflationApply == null) return null;
             for (View view : mPostInflationApply) {
                 if (view instanceof Toolbar)
                     return (Toolbar) view;
