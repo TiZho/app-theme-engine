@@ -2,8 +2,8 @@ package com.afollestad.appthemeengine.inflation;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatCheckedTextView;
 import android.util.AttributeSet;
-import android.widget.CheckedTextView;
 
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.ATEActivity;
@@ -12,7 +12,7 @@ import com.afollestad.appthemeengine.tagprocessors.ATEDefaultTags;
 /**
  * @author Aidan Follestad (afollestad)
  */
-class ATECheckedTextView extends CheckedTextView implements ViewInterface {
+class ATECheckedTextView extends AppCompatCheckedTextView implements ViewInterface {
 
     public ATECheckedTextView(Context context) {
         super(context);

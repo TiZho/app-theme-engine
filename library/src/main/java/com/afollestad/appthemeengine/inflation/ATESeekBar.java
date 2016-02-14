@@ -2,8 +2,8 @@ package com.afollestad.appthemeengine.inflation;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
-import android.widget.SeekBar;
 
 import com.afollestad.appthemeengine.ATEActivity;
 import com.afollestad.appthemeengine.tagprocessors.ATEDefaultTags;
@@ -11,7 +11,7 @@ import com.afollestad.appthemeengine.tagprocessors.ATEDefaultTags;
 /**
  * @author Aidan Follestad (afollestad)
  */
-class ATESeekBar extends SeekBar implements ViewInterface {
+class ATESeekBar extends AppCompatSeekBar implements ViewInterface {
 
     public ATESeekBar(Context context) {
         super(context);

@@ -2,6 +2,7 @@ package com.afollestad.appthemeengine.inflation;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -11,7 +12,7 @@ import com.afollestad.appthemeengine.tagprocessors.ATEDefaultTags;
 /**
  * @author Aidan Follestad (afollestad)
  */
-class ATETextView extends TextView implements ViewInterface {
+class ATETextView extends AppCompatTextView implements ViewInterface {
 
     public ATETextView(Context context) {
         super(context);
