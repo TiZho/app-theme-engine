@@ -55,6 +55,7 @@ class ATEEditText extends AppCompatEditText implements ViewInterface, PostInflat
 
     @Override
     public void postApply() {
+        if(!mWaitForInflate) return;
         mWaitForInflate = false;
         ATEViewUtil.init(mKeyContext, this, getContext());
         mKeyContext = null;
