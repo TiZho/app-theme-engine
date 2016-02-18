@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.util.TextInputLayoutUtil;
 import com.afollestad.appthemeengine.util.TintHelper;
 
@@ -55,7 +56,7 @@ public class TintTagProcessor extends TagProcessor {
 
     @Override
     public void process(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
-        final ColorResult result = getColorFromSuffix(context, key, view, suffix);
+        final ColorResult result = getTintColorFromSuffix(context, key, view, suffix);
         if (result == null) return;
 
         if (mSelectorMode) {
@@ -71,5 +72,23 @@ public class TintTagProcessor extends TagProcessor {
                 TextInputLayoutUtil.setAccent(til, result.getColor());
             }
         }
+    }
+
+    /**
+     * Returns the same as getColorFromSuffix, but adjusts the result of dependent colors
+     * to be the accent color (used for activated state)
+     */
+    public static ColorResult getTintColorFromSuffix(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
+        ColorResult result = getColorFromSuffix(context, key, view, suffix);
+        if (result == null) return null;
+        // Tinted dependent color should be the accent color (only base color is dependent)
+        switch (suffix) {
+            case PARENT_DEPENDENT:
+            case PRIMARY_COLOR_DEPENDENT:
+            case ACCENT_COLOR_DEPENDENT:
+            case WINDOW_BG_DEPENDENT:
+                result.setColor(Config.accentColor(context, key));
+        }
+        return result;
     }
 }

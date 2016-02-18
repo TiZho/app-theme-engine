@@ -33,6 +33,10 @@ public abstract class TagProcessor {
             mDark = dark;
         }
 
+        public void setColor(@ColorInt int color) {
+            mColor = color;
+        }
+
         public int getColor() {
             return mColor;
         }
@@ -110,16 +114,19 @@ public abstract class TagProcessor {
                 break;
             }
             case PRIMARY_COLOR_DEPENDENT: {
+                isDependent = true;
                 isDark = !ATEUtil.isColorLight(Config.primaryColor(context, key));
                 result = isDark ? Color.WHITE : Color.BLACK;
                 break;
             }
             case ACCENT_COLOR_DEPENDENT: {
+                isDependent = true;
                 isDark = !ATEUtil.isColorLight(Config.accentColor(context, key));
                 result = isDark ? Color.WHITE : Color.BLACK;
                 break;
             }
             case WINDOW_BG_DEPENDENT: {
+                isDependent = true;
                 isDark = !ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.windowBackground));
                 result = isDark ? Color.WHITE : Color.BLACK;
                 break;
@@ -148,16 +155,16 @@ public abstract class TagProcessor {
     public abstract void process(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix);
 
 
-    private static final String PRIMARY_COLOR = "primary_color";
-    private static final String PRIMARY_COLOR_DARK = "primary_color_dark";
-    private static final String ACCENT_COLOR = "accent_color";
-    private static final String PRIMARY_TEXT_COLOR = "primary_text";
-    private static final String PRIMARY_TEXT_COLOR_INVERSE = "primary_text_inverse";
-    private static final String SECONDARY_TEXT_COLOR = "secondary_text";
-    private static final String SECONDARY_TEXT_COLOR_INVERSE = "secondary_text_inverse";
+    protected static final String PRIMARY_COLOR = "primary_color";
+    protected static final String PRIMARY_COLOR_DARK = "primary_color_dark";
+    protected static final String ACCENT_COLOR = "accent_color";
+    protected static final String PRIMARY_TEXT_COLOR = "primary_text";
+    protected static final String PRIMARY_TEXT_COLOR_INVERSE = "primary_text_inverse";
+    protected static final String SECONDARY_TEXT_COLOR = "secondary_text";
+    protected static final String SECONDARY_TEXT_COLOR_INVERSE = "secondary_text_inverse";
 
-    private static final String PARENT_DEPENDENT = "parent_dependent";
-    private static final String PRIMARY_COLOR_DEPENDENT = "primary_color_dependent";
-    private static final String ACCENT_COLOR_DEPENDENT = "accent_color_dependent";
-    private static final String WINDOW_BG_DEPENDENT = "window_bg_dependent";
+    protected static final String PARENT_DEPENDENT = "parent_dependent";
+    protected static final String PRIMARY_COLOR_DEPENDENT = "primary_color_dependent";
+    protected static final String ACCENT_COLOR_DEPENDENT = "accent_color_dependent";
+    protected static final String WINDOW_BG_DEPENDENT = "window_bg_dependent";
 }

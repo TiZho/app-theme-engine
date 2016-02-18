@@ -44,7 +44,7 @@
                 android:layout_marginLeft="@dimen/content_inset"
                 android:layout_marginRight="@dimen/content_inset"
                 android:hint="@string/regular_input"
-                android:tag="tint|parent_dependent,text_color|parent_dependent,text_color_hint|parent_dependent" />
+                android:tag="tint|accent_color_dependent,text_color|accent_color_dependent,text_color_hint|accent_color_dependent" />
 
         </FrameLayout>
 
