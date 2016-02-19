@@ -56,7 +56,12 @@ public class TintTagProcessor extends TagProcessor {
 
     @Override
     public void process(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
-        final ColorResult result = getTintColorFromSuffix(context, key, view, suffix);
+        final ColorResult result;
+        if (isAccentColorTinted(view)) {
+            result = getAccentColorTintFromSuffix(context, key, view, suffix);
+        } else {
+            result = getColorFromSuffix(context, key, view, suffix);
+        }
         if (result == null) return;
 
         if (mSelectorMode) {
@@ -78,7 +83,7 @@ public class TintTagProcessor extends TagProcessor {
      * Returns the same as getColorFromSuffix, but adjusts the result of dependent colors
      * to be the accent color (used for activated state)
      */
-    public static ColorResult getTintColorFromSuffix(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
+    private static ColorResult getAccentColorTintFromSuffix(@NonNull Context context, @Nullable String key, @NonNull View view, @NonNull String suffix) {
         ColorResult result = getColorFromSuffix(context, key, view, suffix);
         if (result == null) return null;
         // Tinted dependent color should be the accent color (only base color is dependent)
@@ -90,5 +95,13 @@ public class TintTagProcessor extends TagProcessor {
                 result.setColor(Config.accentColor(context, key));
         }
         return result;
+    }
+
+    /**
+     * Checks whether this view should be tinted with the accent color
+     * when the tag is background dependent
+     */
+    private static boolean isAccentColorTinted(View view) {
+        return view instanceof EditText;
     }
 }
