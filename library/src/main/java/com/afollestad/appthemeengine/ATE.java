@@ -272,6 +272,9 @@ public final class ATE extends ATEBase {
         final int toolbarColor = Config.toolbarColor(activity, key, toolbar);
         final int tintColor = Config.getToolbarTitleColor(activity, toolbar, key, toolbarColor);
 
+        // Make sure toolbar is valid
+        if(toolbar == null) return;
+
         // The collapse icon displays when action views are expanded (e.g. SearchView)
         try {
             final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");
