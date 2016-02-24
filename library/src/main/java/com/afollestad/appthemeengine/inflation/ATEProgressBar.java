@@ -30,7 +30,11 @@ class ATEProgressBar extends ProgressBar implements ViewInterface {
 
     private void init(Context context, @Nullable ATEActivity keyContext) {
         ATEDefaultTags.process(this);
-        ATEViewUtil.init(keyContext, this, context);
+        try {
+            ATEViewUtil.init(keyContext, this, context);
+        } catch (Throwable t) {
+            throw new RuntimeException(t.getMessage(), t);
+        }
     }
 
     @Override
