@@ -3,6 +3,7 @@ package com.afollestad.appthemeengine.inflation;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.util.AttributeSet;
 
 import com.afollestad.appthemeengine.ATE;
@@ -12,7 +13,7 @@ import com.afollestad.appthemeengine.tagprocessors.ATEDefaultTags;
 /**
  * @author Aidan Follestad (afollestad)
  */
-public class ATEMultiAutoCompleteTextView extends AppCompatAutoCompleteTextView implements ViewInterface, PostInflationApplier {
+public class ATEMultiAutoCompleteTextView extends AppCompatMultiAutoCompleteTextView implements ViewInterface, PostInflationApplier {
 
     public ATEMultiAutoCompleteTextView(Context context) {
         super(context);
