@@ -47,8 +47,8 @@ public abstract class TagProcessor {
 
         public boolean isDark(Context context) {
             if (!mDependent) {
-                // mDark wasn't loaded, determine from window background instead.
-                final int windowBg = ATEUtil.resolveColor(context, android.R.attr.windowBackground);
+                // mDark wasn't loaded, determine from theme background color instead.
+                final int windowBg = ATEUtil.resolveColor(context, android.R.attr.colorBackground);
                 mDark = !ATEUtil.isColorLight(windowBg);
             }
             return mDark;
@@ -103,7 +103,7 @@ public abstract class TagProcessor {
                 final View firstBgView = getBackgroundView(view);
                 if (firstBgView == null) {
                     Log.d("ATETagProcessor", "No parents with color drawables as backgrounds found, falling back to windowBackground.");
-                    final int dependentColor = ATEUtil.resolveColor(context, android.R.attr.windowBackground);
+                    final int dependentColor = ATEUtil.resolveColor(context, android.R.attr.colorBackground);
                     isDark = !ATEUtil.isColorLight(dependentColor);
                     result = isDark ? Color.WHITE : Color.BLACK;
                 } else {
@@ -127,7 +127,7 @@ public abstract class TagProcessor {
             }
             case WINDOW_BG_DEPENDENT: {
                 isDependent = true;
-                isDark = !ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.windowBackground));
+                isDark = !ATEUtil.isColorLight(ATEUtil.resolveColor(context, android.R.attr.colorBackground));
                 result = isDark ? Color.WHITE : Color.BLACK;
                 break;
             }
